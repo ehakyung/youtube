@@ -1,5 +1,4 @@
-from ctypes.wintypes import RGB
-import sys
+import sys, account
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 class Ui:
@@ -46,6 +45,7 @@ class Ui:
         self.leftEditStyle = self.backgroundBlack + self.borderStyle + self.leftRadius20 + self.fontBlue + self.padding
         self.rightEditStyle = self.backgroundBlack + self.borderStyle + self.rightRadius20 + self.fontBlue + self.padding
         self.btnStyle = self.backgroundGray + self.borderStyle + self.leftRadius20 + self.rightRadius20 + self.fontWhite
+        self.btnEnteredStyle = self.backgroundBlue + self.borderStyle + self.leftRadius20 + self.rightRadius20 + self.fontWhite
         self.rightBtnStyle = self.backgroundGray + self.borderStyle + self.rightRadius20 + self.fontWhite
 
 #=====================================================================================[ UI ]
@@ -69,21 +69,23 @@ class Ui:
             self.screen.addWidget(tmpPage)
             self.pagesOfScreen.append(tmpPage)
 
-        self.screen.setCurrentIndex(6)
+        self.screen.setCurrentIndex(0)
 
         # Back Button(아이디찾기 페이지, 비밀번호찾기 페이지, 회원가입 페이지)
-        # self.backBtns = []
+        self.backBtns = []
         for index in range (1, 4):
             tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[index])
             tmpBtn.setGeometry(40, 28, 24, 24)
             tmpBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/backBtn.png)")
+            self.backBtns.append(tmpBtn)
 
         # Button(프로필 페이지, 동영상 페이지)
-        # self.homeBtns = []
+        self.homeBtns = []
         for index in range (5, 7):
             tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[index])
             tmpBtn.setGeometry(20, 20, 40, 40)
             tmpBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/homeBtn.png)")
+            self.homeBtns.append(tmpBtn)
 
 #=====================================================================================[ UI ]
 #-------------------------------------------------------------------------------------[ 로그인 페이지 ]
@@ -93,7 +95,7 @@ class Ui:
         self.loginPageNoticeLabel.setGeometry(420, 297, 360, 20)
         self.loginPageNoticeLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.loginPageNoticeLabel.setFont(self.font16)
-        self.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
+        # self.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
         self.loginPageNoticeLabel.setAlignment(self.alignCenter)
 
         #  Label(ID, PW)
@@ -127,7 +129,7 @@ class Ui:
         self.loginPageLoginBtn.setText("Login")
 
         # Button(아이디 찾기, 비밀번호 찾기, 회원가입)
-        self.loginPagebtns = []
+        self.loginPageBtns = []
         self.nameOfLoginPageBtns = ["아이디 찾기", "비밀번호 찾기", "회원가입"]
         for index in range (0, 3):
             tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[0])
@@ -135,7 +137,7 @@ class Ui:
             tmpBtn.setStyleSheet(self.backgroundTransparent + self.borderNone + self.fontWhite)
             tmpBtn.setFont(self.font14)
             tmpBtn.setText(self.nameOfLoginPageBtns[index])
-            self.loginPagebtns.append(tmpBtn)
+            self.loginPageBtns.append(tmpBtn)
 
 #-------------------------------------------------------------------------------------[ 아이디찾기 페이지 ]
 
@@ -144,7 +146,6 @@ class Ui:
         self.findIdPageNoticeLabel.setGeometry(420, 390, 360, 20)
         self.findIdPageNoticeLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.findIdPageNoticeLabel.setFont(self.font16)
-        self.findIdPageNoticeLabel.setText("가입시 입력한 메일주소를 입력하세요")
         self.findIdPageNoticeLabel.setAlignment(self.alignCenter)
 
         # Label(MAIL)
@@ -175,7 +176,6 @@ class Ui:
         self.findPwPageNoticeLabel.setGeometry(420, 380, 360, 20)
         self.findPwPageNoticeLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.findPwPageNoticeLabel.setFont(self.font16)
-        self.findPwPageNoticeLabel.setText("가입시 입력한 아이디와 메일주소를 입력하세요")
         self.findPwPageNoticeLabel.setAlignment(self.alignCenter)
 
         #  Label(ID, MAIL)
@@ -213,7 +213,6 @@ class Ui:
         self.joinPageNoticeLabel.setGeometry(420, 294, 360, 20)
         self.joinPageNoticeLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.joinPageNoticeLabel.setFont(self.font16)
-        self.joinPageNoticeLabel.setText("이미 사용 중인 아이디입니다")
         self.joinPageNoticeLabel.setAlignment(self.alignCenter)
 
         #  Label(NAME, ID, PW, PHONE, MAIL)
@@ -230,11 +229,13 @@ class Ui:
 
         # Edit(NAME, ID, PW, PHONE, MAIL)
         self.joinPageEdits = []
+        self.hintForJoinPageEdits = ["공백 포함 10자 이내", "문자(특수문자 불가), 숫자 사용 4~20자", "문자(특수문자 가능), 숫자 사용 8~20자", "예: 01X-XXX(또는 XXXX)-XXXX", "예: id@domain.com"]
         for index in range (0, 5):
             tmpEdit = QtWidgets.QLineEdit(self.pagesOfScreen[3])
             tmpEdit.setGeometry(480, 334+(index*60), 300, 40)
             tmpEdit.setStyleSheet(self.rightEditStyle)
             tmpEdit.setFont(self.font16)
+            tmpEdit.setPlaceholderText(self.hintForJoinPageEdits[index])
             self.joinPageEdits.append(tmpEdit)
 
         self.joinPageEdits[2].setEchoMode(QtWidgets.QLineEdit.Password)
@@ -480,16 +481,16 @@ class Ui:
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
-#-------------------------------------------------------------------------------------[  ]
 #=====================================================================================[  ]
 
         self.mainWindow.show()
 
-if __name__=="__main__":
+if __name__ == "__main__":
 
     
-    app=QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
-    ui=Ui()
-    
+    ui = Ui()
+    account = account.Account(ui)
+
     sys.exit(app.exec_())
