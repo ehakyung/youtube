@@ -21,8 +21,20 @@ class Account:
             self.ui.backBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent3(event, i)
             
         self.ui.loginPageLoginBtn.clicked.connect(self.loginBtnEvent)
-        self.ui.loginPageLoginBtn.enterEvent = self.enterEvent2
-        self.ui.loginPageLoginBtn.leaveEvent = self.leaveEvent2
+        # self.ui.loginPageLoginBtn.enterEvent = self.enterEvent2
+        # self.ui.loginPageLoginBtn.leaveEvent = self.leaveEvent2
+        self.ui.loginPageLoginBtn.enterEvent = lambda event: self.enterEvent2(self.ui.loginPageLoginBtn, event)
+        self.ui.loginPageLoginBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.loginPageLoginBtn, event)
+
+        self.ui.findIdPageFindBtn.clicked.connect(self.findIdPageFindBtnEvent)
+        self.ui.findIdPageFindBtn.enterEvent = lambda event: self.enterEvent2(self.ui.findIdPageFindBtn, event)
+        self.ui.findIdPageFindBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.findIdPageFindBtn, event)
+
+        self.ui.findPwPageFindBtn.clicked.connect(self.findPwPageFindBtnEvent)
+        self.ui.findPwPageFindBtn.enterEvent = lambda event: self.enterEvent2(self.ui.findPwPageFindBtn, event)
+        self.ui.findPwPageFindBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.findPwPageFindBtn, event)
+
+
 
         self.ui.joinPageEdits[0].textChanged.connect(self.nameCheckEvent)
         self.ui.joinPageEdits[1].textChanged.connect(self.idCheckEvent)
@@ -31,6 +43,10 @@ class Account:
         self.ui.joinPageEdits[4].textChanged.connect(self.mailCheckEvent)
 
         self.ui.joinPageJoinBtn.clicked.connect(self.joinBtnEvent)
+        self.ui.joinPageJoinBtn.enterEvent = lambda event: self.enterEvent2(self.ui.joinPageJoinBtn, event)
+        self.ui.joinPageJoinBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.joinPageJoinBtn, event)
+
+        
 #-------------------------------------------------------------------------------------[ 페이지 전환 함수 ]
 
     def clickEvent(self, event, index):
@@ -62,11 +78,17 @@ class Account:
     def leaveEvent1(self, event, index):
         self.ui.loginPageBtns[index].setStyleSheet(self.ui.backgroundTransparent + self.ui.borderNone + self.ui.fontWhite)
 
-    def enterEvent2(self, event):
-        self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnEnteredStyle)
+    # def enterEvent2(self, event):
+    #     self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnEnteredStyle)
 
-    def leaveEvent2(self, event):
-        self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnStyle)
+    # def leaveEvent2(self, event):
+    #     self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnStyle)
+
+    def enterEvent2(self, btn, event):
+        btn.setStyleSheet(self.ui.btnEnteredStyle)
+
+    def leaveEvent2(self, btn, event):
+        btn.setStyleSheet(self.ui.btnStyle)
 
     def enterEvent3(self, event, index):
         self.ui.backBtns[index].setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/backBtnBlue.png)")
@@ -97,8 +119,34 @@ class Account:
 
                 for index in range(0, len(self.ui.loginPageEdits)):
                     self.ui.loginPageEdits[index].clear()
-#-------------------------------------------------------------------------------------[ 이름 유효성 검사 함수 ]
+#-------------------------------------------------------------------------------------[ 아이디 찾기 함수 ]
 
+    def findIdPageFindBtnEvent(self):
+        mail=self.ui.findIdPageEdit.text()
+        self.database.cursor.execute("SELECT id FROM account WHERE mail=?", [mail])
+        result=self.database.cursor.fetchall()
+        if len(result) == 0:
+            self.ui.findIdPageNoticeLabel.setText("메일주소를 잘못 입력하셨습니다")
+        else:
+            self.ui.findIdPageNoticeLabel.setText("귀하의 아이디는 " + result[0][0] + "입니다")
+
+#-------------------------------------------------------------------------------------[ 비밀번호 찾기 함수 ]
+
+    def findPwPageFindBtnEvent(self):
+        info=[]
+        for index in range (0, len(self.ui.findPwPageEdits)):
+            info.append(self.ui.findPwPageEdits[index].text())
+
+        if "" in info:
+            self.ui.findPwPageNoticeLabel.setText("모든 정보를 입력해주세요")
+        else:
+            self.database.cursor.execute("SELECT pw FROM account WHERE id=? AND mail=?", info)
+            result=self.database.cursor.fetchall()
+
+            if len(result) == 0:
+                self.ui.findPwPageNoticeLabel.setText("아이디 또는 메일주소를 잘못 입력하셨습니다")
+            else:
+                self.ui.findPwPageNoticeLabel.setText("귀하의 비밀번호는 " + result[0][0] + "입니다")
 
 #-------------------------------------------------------------------------------------[ 이름 유효성 검사 함수 ]
 
