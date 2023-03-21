@@ -1,4 +1,4 @@
-import sys, account
+import sys, account, database
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 class Ui:
@@ -331,21 +331,24 @@ class Ui:
 
         # Label(NAME, ID, 가입일, PHONE, MAIL, 재생목록수)
         self.myInfoPageLabels = []
+        self.myInfoPageEdits = []
         self.nameOfMyInfoPageLabels = ["NAME", "ID", "가입일", "PHONE", "MAIL", "재생목록수"]
         for index in range (0, 6):
-            tmpLabel1 = QtWidgets.QLabel(self.pagesOfScreen[5])
-            tmpLabel1.setGeometry(278, 290+(index*60), 80, 20)
-            tmpLabel1.setStyleSheet(self.backgroundTransparent + self.fontWhite)
-            tmpLabel1.setFont(self.font16)
-            tmpLabel1.setAlignment(self.alignRight)
-            tmpLabel1.setText(self.nameOfMyInfoPageLabels[index])
-            self.myInfoPageLabels.append(tmpLabel1)
+            tmpLabel = QtWidgets.QLabel(self.pagesOfScreen[5])
+            tmpLabel.setGeometry(278, 290+(index*60), 80, 20)
+            tmpLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+            tmpLabel.setFont(self.font16)
+            tmpLabel.setAlignment(self.alignRight)
+            tmpLabel.setText(self.nameOfMyInfoPageLabels[index])
+            self.myInfoPageLabels.append(tmpLabel)
 
-            tmpLabel2 = QtWidgets.QLabel(self.pagesOfScreen[5])
-            tmpLabel2.setGeometry(388, 290+(index*60), 400, 20)
-            tmpLabel2.setStyleSheet(self.backgroundTransparent + self.fontBlue)
-            tmpLabel2.setFont(self.font16)
-            tmpLabel2.setText(self.nameOfMyInfoPageLabels[index])
+            tmpEdit = QtWidgets.QLineEdit(self.pagesOfScreen[5])
+            tmpEdit.setGeometry(388, 290+(index*60), 400, 20)
+            tmpEdit.setStyleSheet(self.backgroundTransparent + self.borderNone + self.fontBlue)
+            tmpEdit.setFont(self.font16)
+            tmpEdit.setText(self.nameOfMyInfoPageLabels[index])
+            tmpEdit.setEnabled(False)
+            self.myInfoPageEdits.append(tmpEdit)
 
 #-------------------------------------------------------------------------------------[ 동영상 페이지 ]
 
@@ -477,6 +480,13 @@ class Ui:
             "background-position: center;")
 
 #-------------------------------------------------------------------------------------[  ]
+    # def logoutDialog(self):
+    #     self.logoutReply = QtWidgets.QMessageBox.question(self.mainWindow, 'Logout', "로그아웃 하시겠습니까?", QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No)
+    #     if self.logoutReply == QtWidgets.QMessageBox.Yes:
+    #         self.screen.setCurrentIndex(0)
+    #     else:
+    #         pass
+
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
@@ -491,6 +501,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     ui = Ui()
-    account = account.Account(ui)
+    database = database.Database()
+    account = account.Account(ui, database)
 
     sys.exit(app.exec_())

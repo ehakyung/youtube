@@ -1,9 +1,10 @@
-import database, re
+import database, main, re
 
 class Account:
-    def __init__(self, ui):
+    def __init__(self, ui, database):
         self.ui = ui
-        self.database = database.Database()
+        self.database = database
+
         self.nameCheck = None
         self.idCheck = None
         self.pwCheck = None
@@ -116,7 +117,8 @@ class Account:
                 # self.afterLogin=AfterLogin.AfterLogin(self.ui, self)
 
                 self.ui.screen.setCurrentIndex(4)
-
+                self.main = main.Main(self.ui, self.database, self)
+                self.loadProfileInfo()
                 for index in range(0, len(self.ui.loginPageEdits)):
                     self.ui.loginPageEdits[index].clear()
 #-------------------------------------------------------------------------------------[ 아이디 찾기 함수 ]
@@ -261,3 +263,20 @@ class Account:
                                     print(info)
                                 self.database.cursor.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, datetime('now','localtime'))", [info[0], info[1], info[2], info[3], info[4]])
                                 self.database.connect.commit()
+
+#-------------------------------------------------------------------------------------[ 프로필 함수 ]
+
+    def loadProfileInfo(self):
+        self.database.cursor.execute("SELECT name, id, dateTimeOfJoin, phone, mail FROM account WHERE id=?", [self.database.loggedId])
+        result=self.database.cursor.fetchall()
+        for index in range (0, len(result[0])):
+            self.ui.myInfoPageEdits[index].setText(str(result[0][index]))
+
+        # self.beforeLogin.cursor.execute("SELECT count FROM recordInfo WHERE id=? ORDER BY count, dateTime", [self.beforeLogin.loggedId])
+        # result=self.beforeLogin.cursor.fetchall()
+        # if len(result)<1:
+        #     self.ui.editsForMyInfo[4].setText("NO SCORE")
+        #     self.ui.editsForMyInfo[5].setText("NO PLAY")
+        # else:
+        #     self.ui.editsForMyInfo[4].setText(str(result[0][0]))
+        #     self.ui.editsForMyInfo[5].setText(str(len(result)))
