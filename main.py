@@ -6,12 +6,13 @@ class Main:
 
         self.loggedId = self.database.loggedId
 
+        self.playlist=[]
+
         self.ui.mainPageProfileBtn.clicked.connect(self.profileBtnEvent)
         self.ui.mainPageProfileBtn.enterEvent = lambda event: self.enterEvent1(event)
         self.ui.mainPageProfileBtn.leaveEvent = lambda event: self.leaveEvent1(event)
 
         self.ui.mainPageLogoutBtn.clicked.connect(self.logoutBtnEvent)
-        # self.ui.mainPageLogoutBtn.clicked.connect(self.ui.logoutDialog)
         self.ui.mainPageLogoutBtn.enterEvent = lambda event: self.enterEvent2(event)
         self.ui.mainPageLogoutBtn.leaveEvent = lambda event: self.leaveEvent2(event)
 
@@ -33,16 +34,27 @@ class Main:
         self.ui.screen.setCurrentIndex(4)
 
     def logoutBtnEvent(self):
-        self.ui.screen.setCurrentIndex(0)
-        # self.ui.logoutDialog()
-        # if self.ui.logoutReply == self.ui.QtWidgets.QMessageBox.Yes:
-        #     self.ui.screen.setCurrentIndex(0)
-        # else:
-        #     pass
+        self.ui.messageBoxPopUp(0)
+        
+        if self.ui.reply == 1:
+            self.ui.screen.setCurrentIndex(0)
+            self.ui.reply = None
+        elif self.ui.reply == 0:
+            self.ui.reply = None
         
 
     def addPlaylistBtnEvent(self):
-        pass
+        self.ui.inputDialogPopUp()
+
+        if self.ui.reply == 1:
+            self.ui.reply = None
+            if len(self.ui.tmpPlaylistName) > 20:
+                self.ui.messageBoxPopUp(3)
+            else:
+                print(self.ui.tmpPlaylistName)
+        elif self.ui.reply == 0:
+            self.ui.reply = None
+
 
     def enterEvent1(self, event):
         self.ui.mainPageProfileBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/profileBtnBlue.png)")

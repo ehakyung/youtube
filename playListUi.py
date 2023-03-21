@@ -48,6 +48,8 @@ class Ui:
         self.btnEnteredStyle = self.backgroundBlue + self.borderStyle + self.leftRadius20 + self.rightRadius20 + self.fontWhite
         self.rightBtnStyle = self.backgroundGray + self.borderStyle + self.rightRadius20 + self.fontWhite
 
+
+        self.reply = None
 #=====================================================================================[ UI ]
 
         self.mainWindow = QtWidgets.QMainWindow()
@@ -480,23 +482,61 @@ class Ui:
             "background-position: center;")
 
 #-------------------------------------------------------------------------------------[  ]
-    # def logoutDialog(self):
-    #     self.logoutReply = QtWidgets.QMessageBox.question(self.mainWindow, 'Logout', "로그아웃 하시겠습니까?", QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No)
-    #     if self.logoutReply == QtWidgets.QMessageBox.Yes:
-    #         self.screen.setCurrentIndex(0)
-    #     else:
-    #         pass
-
+        self.mainWindow.show()
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
 #-------------------------------------------------------------------------------------[  ]
 #=====================================================================================[  ]
 
-        self.mainWindow.show()
+    def messageBoxPopUp(self, index):
+        self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요"]
+        self.msgBox = QtWidgets.QMessageBox(self.mainWindow)
+        self.msgBox.setText(self.textOfDialog[index])
+        if index !=3:
+            self.msgBox.setIcon(QtWidgets.QMessageBox.Question)
+            self.msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No)
+            tmpReply = self.msgBox.exec_()
+        
+            if tmpReply == QtWidgets.QMessageBox.Yes:
+                self.reply = 1
+            elif tmpReply == QtWidgets.QMessageBox.No:
+                self.reply ==0
+                
+        elif index == 3:
+            self.msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            self.msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            tmpReply = self.msgBox.exec_()
+        
+            if tmpReply == QtWidgets.QMessageBox.Ok:
+                self.reply = 1
+
+
+
+
+    # def messageBoxPopUp(self, index):
+    #     self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요"]
+    #     self.msgBox = QtWidgets.QMessageBox(self.mainWindow)
+    #     self.msgBox.setText(self.textOfDialog[index])
+    #     self.msgBox.setIcon(QtWidgets.QMessageBox.Question)
+    #     self.msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No)
+    #     tmpReply = self.msgBox.exec()
+    
+    #     if tmpReply == QtWidgets.QMessageBox.Yes:
+    #         self.reply = 1
+    #     elif tmpReply == QtWidgets.QMessageBox.No:
+    #         self.reply ==0
+
+
+    def inputDialogPopUp(self):
+        text, ok = QtWidgets.QInputDialog.getText(self.mainWindow, "", "재생목록의 이름을 입력하세요(20자 이내)")
+        self.tmpPlaylistName = text
+        if ok:
+            self.reply = 1
+        else:
+            self.reply = 0
 
 if __name__ == "__main__":
-
     
     app = QtWidgets.QApplication(sys.argv)
 
