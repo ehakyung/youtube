@@ -47,7 +47,7 @@ class Ui:
         self.btnStyle = self.backgroundGray + self.borderStyle + self.leftRadius20 + self.rightRadius20 + self.fontWhite
         self.btnEnteredStyle = self.backgroundBlue + self.borderStyle + self.leftRadius20 + self.rightRadius20 + self.fontWhite
         self.rightBtnStyle = self.backgroundGray + self.borderStyle + self.rightRadius20 + self.fontWhite
-
+        self.rightBtnEnteredStyle = self.backgroundBlue + self.borderStyle + self.rightRadius20 + self.fontWhite
 
         self.reply = None
 #=====================================================================================[ UI ]
@@ -251,15 +251,12 @@ class Ui:
 
 #-------------------------------------------------------------------------------------[ 메인 페이지 ]
 
-        # Profile Button
-        # self.mainPageProfileBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
-        # self.mainPageProfileBtn.setGeometry(20, 20, 40, 40)
-        # self.mainPageProfileBtn.setStyleSheet(
-        #     "background-image: url(/Users/ehakyung/Desktop/Youtube/image/profileBtn.png);" +
-        #     self.fontBlack +
-        #     self.fontSemibold)
-        # self.mainPageProfileBtn.setFont(self.font16)
-        # self.mainPageProfileBtn.setText("하경")
+        self.mainPageWidgetForScoll=QtWidgets.QWidget(self.pagesOfScreen[4])
+        self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 2000)
+
+        self.mainPageScroll=QtWidgets.QScrollArea(self.pagesOfScreen[4])
+        self.mainPageScroll.setGeometry(0, 120, 1200, 900)
+        self.mainPageScroll.setWidget(self.mainPageWidgetForScoll)
 
         # Profile Button
         self.mainPageProfileBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
@@ -293,9 +290,18 @@ class Ui:
         self.mainPageAddPlaylistLabel.setText("재생목록 추가")
 
         # Playlist Button
-        self.mainPagePlaylistBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
-        self.mainPagePlaylistBtn.setGeometry(68, 120, 254, 142)
-        self.mainPagePlaylistBtn.setStyleSheet(
+        self.mainPagePlaylistIconBtn = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+        self.mainPagePlaylistIconBtn.setGeometry(68, 0, 254, 142)
+        self.mainPagePlaylistIconBtn.setStyleSheet(
+            self.backgroundGray +
+            self.radius15 + 
+            "background-image: url(/Users/ehakyung/Desktop/Youtube/image/emptyPlaylistBtn.png);" +
+            "background-repeat: no-repeat;" +
+            "background-position: center;")
+        
+        self.mainPagePlaylistIconBtn3 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+        self.mainPagePlaylistIconBtn3.setGeometry(68, 1000, 254, 142)
+        self.mainPagePlaylistIconBtn3.setStyleSheet(
             self.backgroundGray +
             self.radius15 + 
             "background-image: url(/Users/ehakyung/Desktop/Youtube/image/emptyPlaylistBtn.png);" +
@@ -303,27 +309,90 @@ class Ui:
             "background-position: center;")
 
 
-        self.mainPagePlaylistBtn2 = QtWidgets.QPushButton(self.pagesOfScreen[4])
-        self.mainPagePlaylistBtn2.setGeometry(338, 120, 254, 142)
-        self.mainPagePlaylistBtn2.setIcon(QtGui.QIcon("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
-        self.mainPagePlaylistBtn2.setIconSize(QtCore.QSize(254, 142))
+        self.mainPagePlaylistIconBtn2 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+        self.mainPagePlaylistIconBtn2.setGeometry(338, 0, 254, 142)
+        self.mainPagePlaylistIconBtn2.setIcon(QtGui.QIcon("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
+        self.mainPagePlaylistIconBtn2.setIconSize(QtCore.QSize(254, 142))
 
 
         # Playlist Name Label
-        self.mainPagePlaylistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[4])
-        self.mainPagePlaylistNameLabel.setGeometry(68, 272, 234, 20)
+        self.mainPagePlaylistNameLabel = QtWidgets.QLabel(self.mainPageWidgetForScoll)
+        self.mainPagePlaylistNameLabel.setGeometry(68, 152, 234, 20)
         self.mainPagePlaylistNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontBold)
         self.mainPagePlaylistNameLabel.setFont(self.font16)
         self.mainPagePlaylistNameLabel.setText("봄 느낌 팝송")
 
         # Delete Playlist Button
-        self.mainPageDeletePlaylistBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
-        self.mainPageDeletePlaylistBtn.setGeometry(302, 272, 20, 20)
+        self.mainPageDeletePlaylistBtn = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+        self.mainPageDeletePlaylistBtn.setGeometry(302, 152, 20, 20)
         self.mainPageDeletePlaylistBtn.setStyleSheet( 
             "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
             "background-repeat: no-repeat;" +
             "background-position: center;")
 
+#########(copy)
+        # # Profile Button
+        # self.mainPageProfileBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPageProfileBtn.setGeometry(20, 20, 40, 40)
+        # self.mainPageProfileBtn.setStyleSheet(
+        #     "background-color: white;" +
+        #     self.fontBlack +
+        #     self.fontSemibold +
+        #     "border-radius: 20px;")
+        # self.mainPageProfileBtn.setFont(self.font16)
+        # self.mainPageProfileBtn.setText("하경")
+        
+
+        # # Logout Button
+        # self.mainPageLogoutBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPageLogoutBtn.setGeometry(80, 20, 40, 40)
+        # self.mainPageLogoutBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/logoutBtn.png);")
+
+        # # Add Playlist Button
+        # self.mainPageAddPlaylistBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPageAddPlaylistBtn.setGeometry(1035, 20, 40, 40)
+        # self.mainPageAddPlaylistBtn.setStyleSheet(
+        #     "background-image: url(/Users/ehakyung/Desktop/Youtube/image/addPlaylistBtn.png);" +
+        #     "background-repeat: no-repeat;")
+        
+        # # Label(재생목록 추가)
+        # self.mainPageAddPlaylistLabel = QtWidgets.QLabel(self.pagesOfScreen[4])
+        # self.mainPageAddPlaylistLabel.setGeometry(1085, 30, 100, 20)
+        # self.mainPageAddPlaylistLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # self.mainPageAddPlaylistLabel.setFont(self.font16)
+        # self.mainPageAddPlaylistLabel.setText("재생목록 추가")
+
+        # # Playlist Button
+        # self.mainPagePlaylistBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPagePlaylistBtn.setGeometry(68, 120, 254, 142)
+        # self.mainPagePlaylistBtn.setStyleSheet(
+        #     self.backgroundGray +
+        #     self.radius15 + 
+        #     "background-image: url(/Users/ehakyung/Desktop/Youtube/image/emptyPlaylistBtn.png);" +
+        #     "background-repeat: no-repeat;" +
+        #     "background-position: center;")
+
+
+        # self.mainPagePlaylistBtn2 = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPagePlaylistBtn2.setGeometry(338, 120, 254, 142)
+        # self.mainPagePlaylistBtn2.setIcon(QtGui.QIcon("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
+        # self.mainPagePlaylistBtn2.setIconSize(QtCore.QSize(254, 142))
+
+
+        # # Playlist Name Label
+        # self.mainPagePlaylistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[4])
+        # self.mainPagePlaylistNameLabel.setGeometry(68, 272, 234, 20)
+        # self.mainPagePlaylistNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontBold)
+        # self.mainPagePlaylistNameLabel.setFont(self.font16)
+        # self.mainPagePlaylistNameLabel.setText("봄 느낌 팝송")
+
+        # # Delete Playlist Button
+        # self.mainPageDeletePlaylistBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])
+        # self.mainPageDeletePlaylistBtn.setGeometry(302, 272, 20, 20)
+        # self.mainPageDeletePlaylistBtn.setStyleSheet( 
+        #     "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
+        #     "background-repeat: no-repeat;" +
+        #     "background-position: center;")
 #-------------------------------------------------------------------------------------[ 프로필 페이지 ]
 
         # Widget
@@ -353,6 +422,13 @@ class Ui:
             self.myInfoPageEdits.append(tmpEdit)
 
 #-------------------------------------------------------------------------------------[ 동영상 페이지 ]
+        
+        self.videoPageWidgetForScoll=QtWidgets.QWidget(self.pagesOfScreen[6])
+        self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 2000)
+
+        self.videoPageScroll=QtWidgets.QScrollArea(self.pagesOfScreen[6])
+        self.videoPageScroll.setGeometry(760, 80, 440, 900)
+        self.videoPageScroll.setWidget(self.videoPageWidgetForScoll)
 
         # Widget
         self.videoPageSectionWidget = QtWidgets.QWidget(self.pagesOfScreen[6])
@@ -440,8 +516,8 @@ class Ui:
         self.videoPageVideoViewLabel.setText("조회수 68만")
 
         # Videolist Button
-        self.videoPageVideolistBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
-        self.videoPageVideolistBtn.setGeometry(760,80, 168, 94)
+        self.videoPageVideolistBtn = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
+        self.videoPageVideolistBtn.setGeometry(0, 0, 168, 94)
         self.videoPageVideolistBtn.setStyleSheet(self.radius10)
         self.videolistThumbnailPixmap=QtGui.QPixmap("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp")
         self.videolistThumbnailPixmap.scaled(168, 94)
@@ -451,8 +527,8 @@ class Ui:
         self.videoPageVideolistBtn.setIconSize(QtCore.QSize(168, 94))
 
         # Label(영상목록 제목)
-        self.videoPageVideolistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        self.videoPageVideolistNameLabel.setGeometry(930, 83, 220, 42)
+        self.videoPageVideolistNameLabel = QtWidgets.QLabel(self.videoPageWidgetForScoll)
+        self.videoPageVideolistNameLabel.setGeometry(170, 3, 220, 42)
         self.videoPageVideolistNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontSemibold)
         self.videoPageVideolistNameLabel.setFont(self.font14)
         self.videoPageVideolistNameLabel.setAlignment(self.alingLeft)
@@ -460,26 +536,154 @@ class Ui:
         self.videoPageVideolistNameLabel.setText("Playlist 따사로운 봄을 기다리며 spring pop 🌱🌼")
 
         # Label(영상목록 채널명)
-        self.videoPageVideolistChannelLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        self.videoPageVideolistChannelLabel.setGeometry(930, 130, 220, 15)
+        self.videoPageVideolistChannelLabel = QtWidgets.QLabel(self.videoPageWidgetForScoll)
+        self.videoPageVideolistChannelLabel.setGeometry(170, 50, 220, 15)
         self.videoPageVideolistChannelLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.videoPageVideolistChannelLabel.setFont(self.font12)
         self.videoPageVideolistChannelLabel.setText("때껄룩 TAKE A LOOK")
 
         # Label(영상목록 조회수)
-        self.videoPageVideolistViewLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        self.videoPageVideolistViewLabel.setGeometry(930, 145, 220, 15)
+        self.videoPageVideolistViewLabel = QtWidgets.QLabel(self.videoPageWidgetForScoll)
+        self.videoPageVideolistViewLabel.setGeometry(170, 65, 220, 15)
         self.videoPageVideolistViewLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
         self.videoPageVideolistViewLabel.setFont(self.font12)
         self.videoPageVideolistViewLabel.setText("조회수 68만")
 
         # Delete Videolist Button
-        self.mainPageDeleteVideolistBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
-        self.mainPageDeleteVideolistBtn.setGeometry(1150, 83, 20, 20)
-        self.mainPageDeleteVideolistBtn.setStyleSheet( 
+        self.videoPageDeleteVideoBtn = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
+        self.videoPageDeleteVideoBtn.setGeometry(390, 3, 20, 20)
+        self.videoPageDeleteVideoBtn.setStyleSheet( 
             "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
             "background-repeat: no-repeat;" +
             "background-position: center;")
+
+#######(copy)
+        # # Widget
+        # self.videoPageSectionWidget = QtWidgets.QWidget(self.pagesOfScreen[6])
+        # self.videoPageSectionWidget.setGeometry(0, 80, 750, 820)
+        # self.videoPageSectionWidget.setStyleSheet(
+        #     "background-color: qlineargradient(spread:pad, x1:1, y1:0.977273, x2:0.0199005, y2:0.0227273, stop:0 rgba(17, 17, 17, 1), stop:1 rgba(255, 255, 255, 15));")
+
+        # # Edit(url 입력창)
+        # self.videoPageUrlEdit = QtWidgets.QLineEdit(self.pagesOfScreen[6])
+        # self.videoPageUrlEdit.setGeometry(100, 20, 900, 40)
+        # self.videoPageUrlEdit.setStyleSheet(self.leftEditStyle)
+        # self.videoPageUrlEdit.setFont(self.font16)
+
+        # # Button(Add)
+        # self.videoPageAddBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
+        # self.videoPageAddBtn.setGeometry(1000, 20, 100, 40)
+        # self.videoPageAddBtn.setStyleSheet(self.rightBtnStyle)
+        # self.videoPageAddBtn.setText("Add")
+        # self.videoPageAddBtn.setFont(self.font16)
+
+        # # Label(재생할 영상이 없습니다)
+        # # self.videoPageEmptyLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # # self.videoPageEmptyLabel.setGeometry(420, 440, 360, 20)
+        # # self.videoPageEmptyLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # # self.videoPageEmptyLabel.setFont(self.font16)
+        # # self.videoPageEmptyLabel.setText("재생할 영상이 없습니다")
+        # # self.videoPageEmptyLabel.setAlignment(self.alignCenter)
+
+        # # Label(재생목록 아이콘)
+        # self.videoPagePlaylistImageLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPagePlaylistImageLabel.setGeometry(20, 120, 40, 40)
+        # self.videoPagePlaylistImageLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/Desktop/Youtube/image/addPlaylistBtn.png"))
+        # self.videoPagePlaylistImageLabel.setAlignment(self.alignCenter)
+
+        # # Label(재생목록명)
+        # self.videoPagePlaylistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPagePlaylistNameLabel.setGeometry(83, 124, 400, 30)
+        # self.videoPagePlaylistNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontSemibold)
+        # self.videoPagePlaylistNameLabel.setFont(self.font24)
+        # self.videoPagePlaylistNameLabel.setText("봄 느낌 팝송")
+
+        # # Label(재생중인 영상)
+        # self.videoPagePlaylistVideoLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPagePlaylistVideoLabel.setGeometry(20, 200, 710, 400)
+        # self.videoPagePlaylistVideoLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
+
+        # # Label(재생옵션버튼 상자)
+        # self.videoPageOptionLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageOptionLabel.setGeometry(20, 620, 110, 34)
+        # self.videoPageOptionLabel.setStyleSheet(self.backgroundGray + self.radius10)
+
+        # # Option Button
+        # self.videoPageOptionBtns = []
+        # self.imageOfVideoPageOptionBtns = ["background-image: url(/Users/ehakyung/Desktop/Youtube/image/playBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/pauseBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/stopBtn.png);"]
+        # for index in range (0, 3):
+        #     tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
+        #     if index==2:
+        #         tmpBtn.setGeometry(100, 628, 20, 22)
+        #     else:    
+        #         tmpBtn.setGeometry(32.5+(index*32.5), 627, 20, 22)
+        #     tmpBtn.setStyleSheet(self.imageOfVideoPageOptionBtns[index] + self.backgroundTransparent + "background-repeat: no-repeat;")
+        #     self.videoPageOptionBtns.append(tmpBtn)
+
+        # # Label(재생 중인 영상 제목)
+        # self.videoPageVideoNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideoNameLabel.setGeometry(20, 670, 710, 63)
+        # self.videoPageVideoNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontSemibold)
+        # self.videoPageVideoNameLabel.setFont(self.font20)
+        # self.videoPageVideoNameLabel.setAlignment(self.alingLeft)
+        # self.videoPageVideoNameLabel.setWordWrap(True)
+        # self.videoPageVideoNameLabel.setText("Playlist 따사로운 봄을 기다리며 spring pop 🌱🌼")
+
+        # # Label(재생 중인 영상 채널명)
+        # self.videoPageVideoChannelLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideoChannelLabel.setGeometry(20, 735, 700, 30)
+        # self.videoPageVideoChannelLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # self.videoPageVideoChannelLabel.setFont(self.font16)
+        # self.videoPageVideoChannelLabel.setText("때껄룩 TAKE A LOOK")
+
+        # # Label(재생 중인 영상 조회수)
+        # self.videoPageVideoViewLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideoViewLabel.setGeometry(20, 765, 700, 30)
+        # self.videoPageVideoViewLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # self.videoPageVideoViewLabel.setFont(self.font16)
+        # self.videoPageVideoViewLabel.setText("조회수 68만")
+
+        # # Videolist Button
+        # self.videoPageVideolistBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
+        # self.videoPageVideolistBtn.setGeometry(760,80, 168, 94)
+        # self.videoPageVideolistBtn.setStyleSheet(self.radius10)
+        # self.videolistThumbnailPixmap=QtGui.QPixmap("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp")
+        # self.videolistThumbnailPixmap.scaled(168, 94)
+        # self.videolistThumbnailIcon=QtGui.QIcon()
+        # self.videolistThumbnailIcon.addPixmap(self.videolistThumbnailPixmap)
+        # self.videoPageVideolistBtn.setIcon(self.videolistThumbnailIcon)
+        # self.videoPageVideolistBtn.setIconSize(QtCore.QSize(168, 94))
+
+        # # Label(영상목록 제목)
+        # self.videoPageVideolistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideolistNameLabel.setGeometry(930, 83, 220, 42)
+        # self.videoPageVideolistNameLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite + self.fontSemibold)
+        # self.videoPageVideolistNameLabel.setFont(self.font14)
+        # self.videoPageVideolistNameLabel.setAlignment(self.alingLeft)
+        # self.videoPageVideolistNameLabel.setWordWrap(True)
+        # self.videoPageVideolistNameLabel.setText("Playlist 따사로운 봄을 기다리며 spring pop 🌱🌼")
+
+        # # Label(영상목록 채널명)
+        # self.videoPageVideolistChannelLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideolistChannelLabel.setGeometry(930, 130, 220, 15)
+        # self.videoPageVideolistChannelLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # self.videoPageVideolistChannelLabel.setFont(self.font12)
+        # self.videoPageVideolistChannelLabel.setText("때껄룩 TAKE A LOOK")
+
+        # # Label(영상목록 조회수)
+        # self.videoPageVideolistViewLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        # self.videoPageVideolistViewLabel.setGeometry(930, 145, 220, 15)
+        # self.videoPageVideolistViewLabel.setStyleSheet(self.backgroundTransparent + self.fontWhite)
+        # self.videoPageVideolistViewLabel.setFont(self.font12)
+        # self.videoPageVideolistViewLabel.setText("조회수 68만")
+
+        # # Delete Videolist Button
+        # self.mainPageDeleteVideolistBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
+        # self.mainPageDeleteVideolistBtn.setGeometry(1150, 83, 20, 20)
+        # self.mainPageDeleteVideolistBtn.setStyleSheet( 
+        #     "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
+        #     "background-repeat: no-repeat;" +
+        #     "background-position: center;")
 
 #-------------------------------------------------------------------------------------[  ]
         self.mainWindow.show()

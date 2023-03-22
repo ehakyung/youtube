@@ -1,8 +1,11 @@
+import video
+
 class Main:
     def __init__(self, ui, database, account):
         self.ui = ui
         self.database = database
         self.account = account
+        self.video = None
 
         self.loggedId = self.database.loggedId
 
@@ -20,6 +23,12 @@ class Main:
         self.ui.mainPageAddPlaylistBtn.enterEvent = lambda event: self.enterEvent3(event)
         self.ui.mainPageAddPlaylistBtn.leaveEvent = lambda event: self.leaveEvent3(event)
 
+        self.ui.mainPagePlaylistIconBtn.clicked.connect(self.playlistIconBtnEvent)
+        #enterevent, leaveevent 추가하기
+
+        self.ui.mainPageDeletePlaylistBtn.clicked.connect(self.mainPageDeletePlaylistBtnEvent)
+        self.ui.mainPageDeletePlaylistBtn.enterEvent = lambda event: self.enterEvent5(event)
+        self.ui.mainPageDeletePlaylistBtn.leaveEvent = lambda event: self.leaveEvent5(event)
 
         for index in range (0, len(self.ui.homeBtns)):
             self.ui.homeBtns[index].clicked.connect(self.homeBtnEvent)
@@ -35,7 +44,7 @@ class Main:
 
     def logoutBtnEvent(self):
         self.ui.messageBoxPopUp(0)
-        
+
         if self.ui.reply == 1:
             self.ui.screen.setCurrentIndex(0)
             self.ui.reply = None
@@ -52,9 +61,23 @@ class Main:
                 self.ui.messageBoxPopUp(3)
             else:
                 print(self.ui.tmpPlaylistName)
+                #재생목록 하나씩 생성하기
         elif self.ui.reply == 0:
             self.ui.reply = None
 
+
+    def playlistIconBtnEvent(self):
+        self.ui.screen.setCurrentIndex(6)
+        self.video = video.Video(self.ui)
+
+    def mainPageDeletePlaylistBtnEvent(self):
+        self.ui.messageBoxPopUp(1)
+
+        if self.ui.reply == 1:
+            print("재생목록 삭제")
+            self.ui.reply = None
+        elif self.ui.reply == 0:
+            self.ui.reply = None
 
     def enterEvent1(self, event):
         self.ui.mainPageProfileBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/profileBtnBlue.png)")
@@ -79,3 +102,9 @@ class Main:
 
     def leaveEvent4(self, event, index):
         self.ui.homeBtns[index].setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/homeBtn.png)")
+
+    def enterEvent5(self, event):
+        self.ui.mainPageDeletePlaylistBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtnBlue.png)")
+
+    def leaveEvent5(self, event):
+        self.ui.mainPageDeletePlaylistBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png)")
