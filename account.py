@@ -113,9 +113,10 @@ class Account:
                 self.ui.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
             else:
                 self.database.loggedId = info[0]
-                # self.game=Game.Game(self.ui, self) #game 버튼 이벤트를 AtterLogin에 포함시키기
-                # self.afterLogin=AfterLogin.AfterLogin(self.ui, self)
-
+                self.database.cursor.execute("SELECT nameOfList, indexOflist FROM playlist WHERE id=?", [self.database.loggedId]) 
+                result=self.database.cursor.fetchall()
+                self.ui.playlistOfLoggedId = result
+                self.ui.displayPlaylist()
                 self.ui.screen.setCurrentIndex(4)
                 self.main = main.Main(self.ui, self.database, self)
                 self.loadProfileInfo()
