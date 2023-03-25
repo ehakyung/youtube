@@ -22,8 +22,6 @@ class Account:
             self.ui.backBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent3(event, i)
             
         self.ui.loginPageLoginBtn.clicked.connect(self.loginBtnEvent)
-        # self.ui.loginPageLoginBtn.enterEvent = self.enterEvent2
-        # self.ui.loginPageLoginBtn.leaveEvent = self.leaveEvent2
         self.ui.loginPageLoginBtn.enterEvent = lambda event: self.enterEvent2(self.ui.loginPageLoginBtn, event)
         self.ui.loginPageLoginBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.loginPageLoginBtn, event)
 
@@ -34,8 +32,6 @@ class Account:
         self.ui.findPwPageFindBtn.clicked.connect(self.findPwPageFindBtnEvent)
         self.ui.findPwPageFindBtn.enterEvent = lambda event: self.enterEvent2(self.ui.findPwPageFindBtn, event)
         self.ui.findPwPageFindBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.findPwPageFindBtn, event)
-
-
 
         self.ui.joinPageEdits[0].textChanged.connect(self.nameCheckEvent)
         self.ui.joinPageEdits[1].textChanged.connect(self.idCheckEvent)
@@ -64,7 +60,6 @@ class Account:
             for index in range(0, len(self.ui.joinPageEdits)):
                 self.ui.joinPageEdits[index].clear()
 
-
     def backBtnEvent(self):
         self.ui.screen.setCurrentIndex(0)
         self.ui.loginPageNoticeLabel.clear()
@@ -78,12 +73,6 @@ class Account:
 
     def leaveEvent1(self, event, index):
         self.ui.loginPageBtns[index].setStyleSheet(self.ui.backgroundTransparent + self.ui.borderNone + self.ui.fontWhite)
-
-    # def enterEvent2(self, event):
-    #     self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnEnteredStyle)
-
-    # def leaveEvent2(self, event):
-    #     self.ui.loginPageLoginBtn.setStyleSheet(self.ui.btnStyle)
 
     def enterEvent2(self, btn, event):
         btn.setStyleSheet(self.ui.btnEnteredStyle)
@@ -107,31 +96,33 @@ class Account:
         if "" in info:
             self.ui.loginPageNoticeLabel.setText("아이디와 비밀번호를 모두 입력해주세요")
         else:
-            self.database.cursor.execute("SELECT id, pw FROM account WHERE id=? AND pw=?", info)
-            result=self.database.cursor.fetchall()
-            if len(result) == 0:
+            self.database.loginInfo = info
+            self.database.matchLoginInfo()
+            if self.database.matchLoginIndex == 0:
                 self.ui.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
             else:
+                self.main = main.Main(self.ui, self.database, self)
+
                 self.database.loggedId = info[0]
-                self.database.cursor.execute("SELECT nameOfList, indexOflist FROM playlist WHERE id=?", [self.database.loggedId]) 
-                result=self.database.cursor.fetchall()
-                self.ui.playlistOfLoggedId = result
+                self.database.loadLoggedIdPlaylistInfo()
+
+                self.loadProfileInfo()
                 self.ui.displayPlaylist()
                 self.ui.screen.setCurrentIndex(4)
-                self.main = main.Main(self.ui, self.database, self)
-                self.loadProfileInfo()
+
                 for index in range(0, len(self.ui.loginPageEdits)):
                     self.ui.loginPageEdits[index].clear()
+
 #-------------------------------------------------------------------------------------[ 아이디 찾기 함수 ]
 
     def findIdPageFindBtnEvent(self):
         mail=self.ui.findIdPageEdit.text()
-        self.database.cursor.execute("SELECT id FROM account WHERE mail=?", [mail])
-        result=self.database.cursor.fetchall()
-        if len(result) == 0:
+        self.database.findIdInfo = mail
+        self.database.matchFindIdInfo()
+        if self.database.matchFindIdIndex == 0:
             self.ui.findIdPageNoticeLabel.setText("메일주소를 잘못 입력하셨습니다")
         else:
-            self.ui.findIdPageNoticeLabel.setText("귀하의 아이디는 " + result[0][0] + "입니다")
+            self.ui.findIdPageNoticeLabel.setText("귀하의 아이디는 " + self.database.idFinded + "입니다")
 
 #-------------------------------------------------------------------------------------[ 비밀번호 찾기 함수 ]
 
@@ -143,13 +134,12 @@ class Account:
         if "" in info:
             self.ui.findPwPageNoticeLabel.setText("모든 정보를 입력해주세요")
         else:
-            self.database.cursor.execute("SELECT pw FROM account WHERE id=? AND mail=?", info)
-            result=self.database.cursor.fetchall()
-
-            if len(result) == 0:
+            self.database.findPwInfo = info
+            self.database.matchFindPwInfo()
+            if self.database.matchFindPwIndex == 0:
                 self.ui.findPwPageNoticeLabel.setText("아이디 또는 메일주소를 잘못 입력하셨습니다")
             else:
-                self.ui.findPwPageNoticeLabel.setText("귀하의 비밀번호는 " + result[0][0] + "입니다")
+                self.ui.findPwPageNoticeLabel.setText("귀하의 비밀번호는 " + self.database.pwFinded + "입니다")
 
 #-------------------------------------------------------------------------------------[ 이름 유효성 검사 함수 ]
 
@@ -272,12 +262,3 @@ class Account:
         result=self.database.cursor.fetchall()
         for index in range (0, len(result[0])):
             self.ui.myInfoPageEdits[index].setText(str(result[0][index]))
-
-        # self.beforeLogin.cursor.execute("SELECT count FROM recordInfo WHERE id=? ORDER BY count, dateTime", [self.beforeLogin.loggedId])
-        # result=self.beforeLogin.cursor.fetchall()
-        # if len(result)<1:
-        #     self.ui.editsForMyInfo[4].setText("NO SCORE")
-        #     self.ui.editsForMyInfo[5].setText("NO PLAY")
-        # else:
-        #     self.ui.editsForMyInfo[4].setText(str(result[0][0]))
-        #     self.ui.editsForMyInfo[5].setText(str(len(result)))
