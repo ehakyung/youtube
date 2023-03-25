@@ -18,10 +18,9 @@ class Database:
         result = self.cursor.fetchall()
         self.matchLoginIndex = len(result)
 
-    def loadLoggedIdPlaylistInfo(self):
+    def readLoggedIdPlaylistInfo(self):
         self.cursor.execute("SELECT nameOfList, indexOflist FROM playlist WHERE id=?", [self.loggedId]) 
-        result = self.cursor.fetchall()
-        self.ui.playlistOfLoggedId = result
+        self.playlistOfLoggedId = self.cursor.fetchall()
 
     def matchFindIdInfo(self):
         self.cursor.execute("SELECT id FROM account WHERE mail=?", [self.findIdInfo])
@@ -37,10 +36,49 @@ class Database:
         if len(result) == 1:
             self.pwFinded = result[0][0]
 
+    def checkJoinId(self):
+        self.cursor.execute("SELECT id FROM account WHERE id=?", [self.joinId]) 
+        result = self.cursor.fetchall()
+        self.checkJoinIdIndex = len(result)
+
+    def checkJoinMail(self):
+        self.cursor.execute("SELECT mail FROM account WHERE mail=?", [self.joinMail])
+        result = self.cursor.fetchall() 
+        self.checkJoinMailIndex = len(result)
+
+    def createJoinInfo(self):
+        self.cursor.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, datetime('now','localtime'))", [self.joinInfo[0], self.joinInfo[1], self.joinInfo[2], self.joinInfo[3], self.joinInfo[4]])
+        self.connect.commit()
+
+    def readProfileInfo(self):
+        self.cursor.execute("SELECT name, id, dateTimeOfJoin, phone, mail FROM account WHERE id=?", [self.loggedId])
+        self.profileInfoRead = self.cursor.fetchall()
+
+
+
+
+    def checkPlaylistName(self):                
+        self.cursor.execute("SELECT indexOfList FROM playlist WHERE id=? AND nameOfList=?", [self.loggedId, self.playlistName]) 
+        result = self.cursor.fetchall()
+        self.checkPlaylistNameIndex = len(result)
+
+    def createPlaylist(self):
+        self.cursor.execute("INSERT INTO playlist (id, nameOfList) VALUES (?, ?)", [self.loggedId, self.playlistName])
+        self.connect.commit()
+
+    def readIndiceOfPlaylist(self):
+        self.cursor.execute("SELECT indexOfList FROM playlist WHERE id=?", [self.loggedId]) 
+        self.indiceOfPlaylist = self.cursor.fetchall()
+
+    def deletePlaylist(self):
+        self.cursor.execute("DELETE FROM playlist WHERE indexOfList =?", [self.indexOfDeletedPlaylist])
+        self.connect.commit()
+
     def logoutSetting(self):
         self.loginInfo = None
         self.matchLoginIndex = None
         self.loggedId = None
+        self.playlistOfLoggedId = None
 
         self.findIdInfo = None
         self.matchFindIdIndex = None
@@ -48,6 +86,18 @@ class Database:
 
         self.findPwInfo = None
         self.matchFindPwIndex = None
+        self.pwFinded = None
+        
+        self.joinId = None
+        self.joinMail = None
+        self.joinInfo = None
+
+        self.profileInfoRead = None
+
+        self.playlistName = None
+        self.checkPlaylistNameIndex = None
+        self.indiceOfPlaylist = None
+        self.indexOfDeletedPlaylist = None
 # if __name__ == "__main__":
 #     db=Database()
 #     db.cursor.execute("DELETE FROM playlist WHERE indexOfList < 10;")

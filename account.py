@@ -4,6 +4,7 @@ class Account:
     def __init__(self, ui, database):
         self.ui = ui
         self.database = database
+        self.main = None
 
         self.nameCheck = None
         self.idCheck = None
@@ -101,18 +102,20 @@ class Account:
             if self.database.matchLoginIndex == 0:
                 self.ui.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
             else:
-                self.main = main.Main(self.ui, self.database, self)
+                # self.main = main.Main(self.ui, self.database, self)
 
                 self.database.loggedId = info[0]
-                self.database.loadLoggedIdPlaylistInfo()
+                self.database.readLoggedIdPlaylistInfo()
+                #여기까지 실행되면 database의 id변수와 playlist(list)변수가 만들어짐
 
-                self.loadProfileInfo()
                 self.ui.displayPlaylist()
+
                 self.ui.screen.setCurrentIndex(4)
 
                 for index in range(0, len(self.ui.loginPageEdits)):
                     self.ui.loginPageEdits[index].clear()
 
+                self.main = main.Main(self.ui, self.database, self)
 #-------------------------------------------------------------------------------------[ 아이디 찾기 함수 ]
 
     def findIdPageFindBtnEvent(self):
@@ -166,10 +169,9 @@ class Account:
             self.ui.joinPageNoticeLabel.setText("4자 이상 20자 이하로 입력하세요")
             self.idCheck = False
         else:
-            self.database.cursor.execute("SELECT id FROM account WHERE id=?", [id]) 
-            result=self.database.cursor.fetchall()
-
-            if len(result) == 0:
+            self.database.joinId = id
+            self.database.checkJoinId()
+            if self.database.checkJoinIdIndex == 0:
                 if id.isalnum() == True:
                     self.ui.joinPageNoticeLabel.setText("사용 가능한 아이디입니다")
                     self.idCheck = True
@@ -216,9 +218,9 @@ class Account:
             self.ui.joinPageNoticeLabel.setText("유효하지 않은 메일주소입니다")
             self.mailCheck = False
         else:
-            self.database.cursor.execute("SELECT mail FROM account WHERE mail=?", [mail])
-            result=self.database.cursor.fetchall() 
-            if len(result) == 0:
+            self.database.joinMail = mail
+            self.database.checkJoinMail()
+            if self.database.checkJoinMailIndex == 0:
                 self.ui.joinPageNoticeLabel.setText("사용 가능한 메일주소입니다")
                 self.mailCheck = True
             else:
@@ -251,14 +253,12 @@ class Account:
                                 info=[]
                                 for index in range (0, len(self.ui.joinPageEdits)):
                                     info.append(self.ui.joinPageEdits[index].text())
-                                    print(info)
-                                self.database.cursor.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, datetime('now','localtime'))", [info[0], info[1], info[2], info[3], info[4]])
-                                self.database.connect.commit()
+                                self.database.joinInfo = info                                
+                                self.database.createJoinInfo()
 
 #-------------------------------------------------------------------------------------[ 프로필 함수 ]
 
-    def loadProfileInfo(self):
-        self.database.cursor.execute("SELECT name, id, dateTimeOfJoin, phone, mail FROM account WHERE id=?", [self.database.loggedId])
-        result=self.database.cursor.fetchall()
-        for index in range (0, len(result[0])):
-            self.ui.myInfoPageEdits[index].setText(str(result[0][index]))
+    # def loadProfileInfo(self):
+    #     self.database.readProfileInfo()
+    #     for index in range (0, len(self.database.profileInfoRead[0])):
+    #         self.ui.myInfoPageEdits[index].setText(str(self.database.profileInfoRead[0][index]))

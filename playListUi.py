@@ -473,16 +473,16 @@ class Ui:
 #=====================================================================================[ 위젯 생성/삭제/재배열 함수 ]
 
     def displayPlaylist(self):
-        self.mainPagePlaylistBtns = []
-        self.mainPagePlaylistNameLabels = []
-        self.mainPageDeletePlaylistBtns = []
+        # self.mainPagePlaylistBtns = []
+        # self.mainPagePlaylistNameLabels = []
+        # self.mainPageDeletePlaylistBtns = []
 
-        if len(self.playlistOfLoggedId) == 0:
+        if len(database.playlistOfLoggedId) == 0:
             pass
         else:
             self.mainPageEmptyLabel.hide()
 
-            for index in range(0, len(self.playlistOfLoggedId)):
+            for index in range(0, len(database.playlistOfLoggedId)):
                 tmpBtn1 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
                 tmpBtn1.setGeometry(68+(index%4)*270, (index//4)*212, 254, 142)
                 tmpBtn1.setStyleSheet(self.emptyPlaylistBtnStyle)
@@ -492,7 +492,7 @@ class Ui:
                 tmpLabel.setGeometry(68+(index%4)*270, 152+(index//4)*212, 234, 20)
                 tmpLabel.setStyleSheet(self.transparentLabelStyle + self.fontBold)
                 tmpLabel.setFont(self.font16)
-                tmpLabel.setText(self.playlistOfLoggedId[index][0])
+                tmpLabel.setText(database.playlistOfLoggedId[index][0])
                 self.mainPagePlaylistNameLabels.append(tmpLabel)
 
                 tmpBtn2 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
@@ -502,7 +502,7 @@ class Ui:
                 "background-repeat: no-repeat;" +
                 "background-position: center;" +
                 "color: transparent;")
-                tmpBtn2.setObjectName(str(self.playlistOfLoggedId[index][1]))
+                tmpBtn2.setObjectName(str(database.playlistOfLoggedId[index][1]))
                 self.mainPageDeletePlaylistBtns.append(tmpBtn2)
 
     def clearMainPage(self):
@@ -595,9 +595,9 @@ class Ui:
         self.reply = None
         self.playlistOfLoggedId = []     
         self.indexOfNewBtn = None 
-        self.mainPagePlaylistBtns = None
-        self.mainPagePlaylistNameLabels = None
-        self.mainPageDeletePlaylistBtns = None
+        self.mainPagePlaylistBtns = []
+        self.mainPagePlaylistNameLabels = []
+        self.mainPageDeletePlaylistBtns = []
 
         # self.deletedPlaylistIndex = None
         self.deletedPlaylistBtnIndex = None
