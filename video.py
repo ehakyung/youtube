@@ -1,3 +1,5 @@
+import pafy, youtube_dl
+
 class Video:
 
     def __init__(self, ui):
@@ -30,3 +32,7 @@ class Video:
 
     def leaveEvent2(self, event):
         self.ui.videoPageDeleteVideoBtn.setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png)")
+
+# if __name__ == "__main__":
+#     video = Video()
+

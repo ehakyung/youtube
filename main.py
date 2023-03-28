@@ -88,8 +88,17 @@ class Main:
         self.ui.reply = None
 
     def playlistBtnEvent(self, event, index):
+
+        tmpIndex = self.ui.mainWindow.sender().objectName()
+        #여기까지 실행되면 어떤 index(db)의 playlist가 선택됐는지 알 수 있음
+
+        self.database.indexOfSelectedPlaylist = tmpIndex
+        self.database.readNameOfPlaylist()
+        self.ui.videoPagePlaylistNameLabel.setText(self.database.selectedPlaylistName)
+
         self.ui.screen.setCurrentIndex(6)
         self.video = video.Video(self.ui)
+
 
     def deletePlaylistBtnEvent(self):
         self.ui.messageBoxPopUp(1)
@@ -101,7 +110,7 @@ class Main:
         for index in range(0, len(self.database.indiceOfPlaylist)):
             tmpList.append(self.database.indiceOfPlaylist[index][0])
         self.ui.deletedPlaylistBtnIndex = tmpList.index(int(tmpIndex))
-        #여기까지 실행되면 어떤 index(db)의 playlist가 삭제됐는지 알 수 있음
+        #여기까지 실행되면 몇번째 버튼의 playlist가 삭제됐는지 알 수 있음
 
         # self.ui.mainPageDeletePlaylistBtns[self.ui.deletedPlaylistBtnIndex].clicked.disconnect()
 
@@ -147,17 +156,6 @@ class Main:
         self.ui.mainPageDeletePlaylistBtns[index].setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png)")
 
     def resetEnterLeaveEvent5(self):
-        # for index in range (0, len(self.ui.mainPagePlaylistBtns)):
-        #     self.ui.mainPagePlaylistBtns[index].clicked.disconnect()
-        # for index in range(0, len(self.ui.mainPageDeletePlaylistBtns)):
-        #     self.ui.mainPageDeletePlaylistBtns[index].clicked.disconnect()
-
-
-        # for index in range (0, len(self.ui.mainPagePlaylistBtns)):
-        #     self.ui.mainPagePlaylistBtns[index].clicked.connect(lambda event, i=index: self.playlistBtnEvent(event, i))
-        #     #enterevent, leaveevent 추가하기
-
         for index in range(0, len(self.ui.mainPageDeletePlaylistBtns)):
-            # self.ui.mainPageDeletePlaylistBtns[index].clicked.connect(self.deletePlaylistBtnEvent)
             self.ui.mainPageDeletePlaylistBtns[index].enterEvent = lambda event, i=index: self.enterEvent5(event, i)
             self.ui.mainPageDeletePlaylistBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent5(event, i)

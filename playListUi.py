@@ -260,16 +260,6 @@ class Ui:
 #-------------------------------------------------------------------------------------[ 메인 페이지 ]
 
         self.mainPageWidgetForScoll=QtWidgets.QWidget(self.pagesOfScreen[4])
-        # self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 2000)
-        
-        if len(self.playlistOfLoggedId) <= 12:
-            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 700)
-        else:
-            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 2000)
-
-        self.mainPageScrollArea=QtWidgets.QScrollArea(self.pagesOfScreen[4])
-        self.mainPageScrollArea.setGeometry(0, 120, 1200, 780)
-        self.mainPageScrollArea.setWidget(self.mainPageWidgetForScoll)
 
         self.mainPageEmptyLabel = QtWidgets.QLabel(self.mainPageWidgetForScoll)
         self.mainPageEmptyLabel.setGeometry(420, 320, 360, 20)
@@ -373,13 +363,12 @@ class Ui:
         self.videoPagePlaylistIconLabel.setGeometry(20, 120, 40, 40)
         self.videoPagePlaylistIconLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/Desktop/Youtube/image/addPlaylistBtn.png"))
         self.videoPagePlaylistIconLabel.setAlignment(self.alignCenter)
-
+#------------------>
         # Label(재생목록명)
         self.videoPagePlaylistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
         self.videoPagePlaylistNameLabel.setGeometry(83, 124, 400, 30)
         self.videoPagePlaylistNameLabel.setStyleSheet(self.transparentLabelStyle + self.fontSemibold)
         self.videoPagePlaylistNameLabel.setFont(self.font24)
-        self.videoPagePlaylistNameLabel.setText("봄 느낌 팝송")
 
         # Label(재생중인 영상)
         self.videoPagePlaylistCurrentVideoLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
@@ -473,37 +462,40 @@ class Ui:
 #=====================================================================================[ 위젯 생성/삭제/재배열 함수 ]
 
     def displayPlaylist(self):
-        # self.mainPagePlaylistBtns = []
-        # self.mainPagePlaylistNameLabels = []
-        # self.mainPageDeletePlaylistBtns = []
-
         if len(database.playlistOfLoggedId) == 0:
-            pass
-        else:
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 770)
+        elif len(database.playlistOfLoggedId) != 0:
             self.mainPageEmptyLabel.hide()
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, (((len(database.playlistOfLoggedId)-1)//4)+1)*212)
 
-            for index in range(0, len(database.playlistOfLoggedId)):
-                tmpBtn1 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
-                tmpBtn1.setGeometry(68+(index%4)*270, (index//4)*212, 254, 142)
-                tmpBtn1.setStyleSheet(self.emptyPlaylistBtnStyle)
-                self.mainPagePlaylistBtns.append(tmpBtn1)
+        for index in range(0, len(database.playlistOfLoggedId)):
+            tmpBtn1 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+            tmpBtn1.setGeometry(68+(index%4)*270, (index//4)*212, 254, 142)
+            tmpBtn1.setStyleSheet(self.emptyPlaylistBtnStyle)
+            tmpBtn1.setObjectName(str(database.playlistOfLoggedId[index][1]))
+            self.mainPagePlaylistBtns.append(tmpBtn1)
 
-                tmpLabel = QtWidgets.QLabel(self.mainPageWidgetForScoll)
-                tmpLabel.setGeometry(68+(index%4)*270, 152+(index//4)*212, 234, 20)
-                tmpLabel.setStyleSheet(self.transparentLabelStyle + self.fontBold)
-                tmpLabel.setFont(self.font16)
-                tmpLabel.setText(database.playlistOfLoggedId[index][0])
-                self.mainPagePlaylistNameLabels.append(tmpLabel)
+            tmpLabel = QtWidgets.QLabel(self.mainPageWidgetForScoll)
+            tmpLabel.setGeometry(68+(index%4)*270, 152+(index//4)*212, 234, 20)
+            tmpLabel.setStyleSheet(self.transparentLabelStyle + self.fontBold)
+            tmpLabel.setFont(self.font16)
+            tmpLabel.setText(database.playlistOfLoggedId[index][0])
+            self.mainPagePlaylistNameLabels.append(tmpLabel)
 
-                tmpBtn2 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
-                tmpBtn2.setGeometry(302+(index%4)*270, 152+(index//4)*212, 20, 20)
-                tmpBtn2.setStyleSheet( 
-                "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
-                "background-repeat: no-repeat;" +
-                "background-position: center;" +
-                "color: transparent;")
-                tmpBtn2.setObjectName(str(database.playlistOfLoggedId[index][1]))
-                self.mainPageDeletePlaylistBtns.append(tmpBtn2)
+            tmpBtn2 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
+            tmpBtn2.setGeometry(302+(index%4)*270, 152+(index//4)*212, 20, 20)
+            tmpBtn2.setStyleSheet( 
+            "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
+            "background-repeat: no-repeat;" +
+            "background-position: center;" +
+            "color: transparent;")
+            tmpBtn2.setObjectName(str(database.playlistOfLoggedId[index][1]))
+            self.mainPageDeletePlaylistBtns.append(tmpBtn2)
+
+        self.mainPageScrollArea=QtWidgets.QScrollArea(self.pagesOfScreen[4])
+        self.mainPageScrollArea.setGeometry(0, 120, 1200, 780)
+        self.mainPageScrollArea.setWidget(self.mainPageWidgetForScoll)
+        self.mainPageScrollArea.setWidgetResizable(False)
 
     def clearMainPage(self):
         for index in range(0, len(self.mainPagePlaylistBtns)):
@@ -512,9 +504,18 @@ class Ui:
             self.mainPageDeletePlaylistBtns[index].deleteLater()
 
     def addPlaylist(self):
+        if self.indexOfNewBtn < 12:  
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 770)
+            self.mainPageScrollArea.setWidgetResizable(False)
+        else:
+            print(self.indexOfNewBtn)
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, ((self.indexOfNewBtn//4)+1)*212)
+            self.mainPageScrollArea.setWidgetResizable(False)
+
         tmpBtn1 = QtWidgets.QPushButton(self.mainPageWidgetForScoll)
         tmpBtn1.setGeometry(68+(self.indexOfNewBtn%4)*270, (self.indexOfNewBtn//4)*212, 254, 142)
         tmpBtn1.setStyleSheet(self.emptyPlaylistBtnStyle)
+        tmpBtn1.setObjectName(str(self.indexOfNewList))
         self.mainPagePlaylistBtns.append(tmpBtn1)
         self.mainPagePlaylistBtns[self.indexOfNewBtn].show()
 
@@ -536,6 +537,8 @@ class Ui:
         self.mainPageDeletePlaylistBtns.append(tmpBtn2)
         self.mainPageDeletePlaylistBtns[self.indexOfNewBtn].show()
 
+        self.mainPageEmptyLabel.hide()
+
     def deletePlaylist(self):
 
         self.mainPagePlaylistBtns[int(self.deletedPlaylistBtnIndex)].deleteLater()
@@ -547,19 +550,38 @@ class Ui:
         del self.mainPageDeletePlaylistBtns[int(self.deletedPlaylistBtnIndex)]
 
         self.resetPlaylistGeometry()
-        # self.displayPlaylist()
-        self.mainWindow.update()
+        if self.mainPagePlaylistBtns == [] :
+            self.mainPageEmptyLabel.show()
+        # self.mainWindow.update()
 
     def resetPlaylistGeometry(self):
+        if len(self.mainPageDeletePlaylistBtns) <= 12 :
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, 770)
+            self.mainPageScrollArea.setWidgetResizable(False)
+        else:
+            print(len(self.mainPageDeletePlaylistBtns))
+            self.mainPageWidgetForScoll.setGeometry(0, 120, 1183, (((len(self.mainPageDeletePlaylistBtns)-1)//4)+1)*212)
+            self.mainPageScrollArea.setWidgetResizable(False)
+
         if int(self.deletedPlaylistBtnIndex) < len(self.mainPageDeletePlaylistBtns):
             for index in range(int(self.deletedPlaylistBtnIndex), len(self.mainPageDeletePlaylistBtns)):
                 self.mainPagePlaylistBtns[index].setGeometry(68+(index%4)*270, (index//4)*212, 254, 142)
                 self.mainPagePlaylistNameLabels[index].setGeometry(68+(index%4)*270, 152+(index//4)*212, 234, 20)
                 self.mainPageDeletePlaylistBtns[index].setGeometry(302+(index%4)*270, 152+(index//4)*212, 20, 20)
-            for index in range(0, len(self.mainPageDeletePlaylistBtns)):
-                print("재배열하는 ", index, "번째: ", self.mainPageDeletePlaylistBtns[index].objectName())
         else:
             pass
+
+    def displayVideoList(self):
+        pass
+
+    def addVideoList(self):
+        pass
+
+    def deleteVideoList(self):
+        pass
+
+    def resetVideoListGeometry(self):
+        pass
 
     def messageBoxPopUp(self, index):
         self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다"]
@@ -599,8 +621,8 @@ class Ui:
         self.mainPagePlaylistNameLabels = []
         self.mainPageDeletePlaylistBtns = []
 
-        # self.deletedPlaylistIndex = None
         self.deletedPlaylistBtnIndex = None
+        self.selectedPlaylistName = None
 
 if __name__ == "__main__":
     

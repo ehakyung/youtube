@@ -74,6 +74,11 @@ class Database:
         self.cursor.execute("DELETE FROM playlist WHERE indexOfList =?", [self.indexOfDeletedPlaylist])
         self.connect.commit()
 
+    def readNameOfPlaylist(self):
+        self.cursor.execute("SELECT nameOfList FROM playlist WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
+        result = self.cursor.fetchall()
+        self.selectedPlaylistName = result[0][0]
+
     def logoutSetting(self):
         self.loginInfo = None
         self.matchLoginIndex = None
@@ -98,6 +103,9 @@ class Database:
         self.checkPlaylistNameIndex = None
         self.indiceOfPlaylist = None
         self.indexOfDeletedPlaylist = None
+
+        self.indexOfSelectedPlaylist = None
+        self.selectedPlaylistName = None
 # if __name__ == "__main__":
 #     db=Database()
 #     db.cursor.execute("DELETE FROM playlist WHERE indexOfList < 10;")
