@@ -273,7 +273,6 @@ class Ui:
         self.mainPageProfileBtn.setGeometry(20, 20, 40, 40)
         self.mainPageProfileBtn.setStyleSheet(self.profileBtnStyle)
         self.mainPageProfileBtn.setFont(self.font16)
-        self.mainPageProfileBtn.setText("하경")
         
         # Logout Button
         self.mainPageLogoutBtn = QtWidgets.QPushButton(self.pagesOfScreen[4])

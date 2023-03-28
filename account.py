@@ -107,9 +107,10 @@ class Account:
                 self.database.loggedId = info[0]
                 self.database.readLoggedIdPlaylistInfo()
                 #여기까지 실행되면 database의 id변수와 playlist(list)변수가 만들어짐
+                self.database.readName()
 
+                self.ui.mainPageProfileBtn.setText(self.database.nameOfLoggedId)
                 self.ui.displayPlaylist()
-
                 self.ui.screen.setCurrentIndex(4)
 
                 for index in range(0, len(self.ui.loginPageEdits)):

@@ -22,6 +22,10 @@ class Database:
         self.cursor.execute("SELECT nameOfList, indexOflist FROM playlist WHERE id=?", [self.loggedId]) 
         self.playlistOfLoggedId = self.cursor.fetchall()
 
+    def readName(self):
+        self.cursor.execute("SELECT name FROM account WHERE id=?", [self.loggedId])
+        self.nameOfLoggedId = (self.cursor.fetchall())[0][0]
+
     def matchFindIdInfo(self):
         self.cursor.execute("SELECT id FROM account WHERE mail=?", [self.findIdInfo])
         result=self.cursor.fetchall()
@@ -54,7 +58,8 @@ class Database:
         self.cursor.execute("SELECT name, id, dateTimeOfJoin, phone, mail FROM account WHERE id=?", [self.loggedId])
         self.profileInfoRead = self.cursor.fetchall()
 
-
+        self.cursor.execute("SELECT indexOfList FROM playlist WHERE id=?", [self.loggedId])
+        self.numOfPlaylistRead = self.cursor.fetchall()
 
 
     def checkPlaylistName(self):                
@@ -84,6 +89,7 @@ class Database:
         self.matchLoginIndex = None
         self.loggedId = None
         self.playlistOfLoggedId = None
+        self.nameOfLoggedId = None
 
         self.findIdInfo = None
         self.matchFindIdIndex = None
@@ -106,6 +112,7 @@ class Database:
 
         self.indexOfSelectedPlaylist = None
         self.selectedPlaylistName = None
+
 # if __name__ == "__main__":
 #     db=Database()
 #     db.cursor.execute("DELETE FROM playlist WHERE indexOfList < 10;")

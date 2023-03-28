@@ -37,7 +37,7 @@ class Main:
         self.database.readProfileInfo()
         for index in range (0, len(self.database.profileInfoRead[0])):
             self.ui.myInfoPageEdits[index].setText(str(self.database.profileInfoRead[0][index]))
-
+        self.ui.myInfoPageEdits[5].setText(str(len(self.database.numOfPlaylistRead)))
         self.ui.screen.setCurrentIndex(5)
 
     def homeBtnEvent(self):
