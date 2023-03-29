@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, pafy
 
 class Database:
     def __init__(self, ui):
@@ -12,6 +12,7 @@ class Database:
         #unique key와 primary key는 다름/autoincreament를 써서 primary key로 만드는 것도 방법임/가입데이터에 가입 date도 넣기
         self.cursor.execute("CREATE TABLE IF NOT EXISTS account (name TEXT, id TEXT PRIMARY KEY, pw TEXT, phone TEXT, mail TEXT, dateTimeOfJoin TEXT)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS playlist (id TEXT REFERENCES account(id), nameOfList TEXT, indexOfList INTEGER PRIMARY KEY AUTOINCREMENT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS video (indexOfList INTEGER REFERENCES playlist(indexOfList), title TEXT, author TEXT, view INTEGER, thumb TEXT, streamingUrl TEXT, indexOfVideo INTEGER PRIMARY KEY AUTOINCREMENT)")
 
     def matchLoginInfo(self):
         self.cursor.execute("SELECT id, pw FROM account WHERE id=? AND pw=?", self.loginInfo)
@@ -19,7 +20,7 @@ class Database:
         self.matchLoginIndex = len(result)
 
     def readLoggedIdPlaylistInfo(self):
-        self.cursor.execute("SELECT nameOfList, indexOflist FROM playlist WHERE id=?", [self.loggedId]) 
+        self.cursor.execute("SELECT nameOfList, indexOfList FROM playlist WHERE id=?", [self.loggedId]) 
         self.playlistOfLoggedId = self.cursor.fetchall()
 
     def readName(self):
@@ -61,7 +62,6 @@ class Database:
         self.cursor.execute("SELECT indexOfList FROM playlist WHERE id=?", [self.loggedId])
         self.numOfPlaylistRead = self.cursor.fetchall()
 
-
     def checkPlaylistName(self):                
         self.cursor.execute("SELECT indexOfList FROM playlist WHERE id=? AND nameOfList=?", [self.loggedId, self.playlistName]) 
         result = self.cursor.fetchall()
@@ -83,6 +83,25 @@ class Database:
         self.cursor.execute("SELECT nameOfList FROM playlist WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
         result = self.cursor.fetchall()
         self.selectedPlaylistName = result[0][0]
+
+    def readSelectedPlaylistVideoInfo(self):
+        self.cursor.execute("SELECT title, indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
+        self.videosOfSelectedPlaylist = self.cursor.fetchall()
+
+    def createVideo(self):
+        info = pafy.new(self.ui.videoPageUrlEdit.text())
+        self.title = info.title
+        self.author = info.author
+        self.view = info.viewcount
+        self.thumb = info.bigthumb
+        self.streamingUrl = info.getbest().url
+
+        self.cursor.execute("INSERT INTO video (indexOfList, title, author, view, thumb, streamingUrl) VALUES (?, ?, ?, ?, ?, ?)", [self.indexOfSelectedPlaylist, self.title, self.author, self.view, self.thumb, self.streamingUrl])
+        self.connect.commit()
+
+    def readIndiceOfVideo(self):
+        self.cursor.execute("SELECT indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
+        self.indiceOfVideo = self.cursor.fetchall()
 
     def logoutSetting(self):
         self.loginInfo = None
@@ -112,6 +131,14 @@ class Database:
 
         self.indexOfSelectedPlaylist = None
         self.selectedPlaylistName = None
+
+        self.title = None
+        self.author = None
+        self.view = None
+        self.thumb = None
+        self.streamingUrl = None
+
+        self.videosOfSelectedPlaylist = None
 
 # if __name__ == "__main__":
 #     db=Database()

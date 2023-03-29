@@ -41,6 +41,7 @@ class Main:
 
     def homeBtnEvent(self):
         self.ui.screen.setCurrentIndex(4)
+        self.ui.clearVideoPage()
 
     def logoutBtnEvent(self):
         self.ui.messageBoxPopUp(0)
@@ -72,15 +73,15 @@ class Main:
 
                     self.database.readIndiceOfPlaylist()
                     self.ui.indexOfNewList = self.database.indiceOfPlaylist[-1][0]
-                    self.ui.indexOfNewBtn = len(self.database.indiceOfPlaylist)-1
+                    self.ui.indexOfNewPlaylistBtn = len(self.database.indiceOfPlaylist)-1
 
                     self.ui.addPlaylist()
 
-                    self.ui.mainPagePlaylistBtns[self.ui.indexOfNewBtn].clicked.connect(lambda event, i = self.ui.indexOfNewBtn: self.playlistBtnEvent(event, i))
+                    self.ui.mainPagePlaylistBtns[self.ui.indexOfNewPlaylistBtn].clicked.connect(lambda event, i = self.ui.indexOfNewPlaylistBtn: self.playlistBtnEvent(event, i))
 
-                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewBtn].clicked.connect(self.deletePlaylistBtnEvent)
-                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewBtn].enterEvent = lambda event, i = self.ui.indexOfNewBtn: self.enterEvent5(event, i)
-                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewBtn].leaveEvent = lambda event, i = self.ui.indexOfNewBtn: self.leaveEvent5(event, i)
+                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewPlaylistBtn].clicked.connect(self.deletePlaylistBtnEvent)
+                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewPlaylistBtn].enterEvent = lambda event, i = self.ui.indexOfNewPlaylistBtn: self.enterEvent5(event, i)
+                    self.ui.mainPageDeletePlaylistBtns[self.ui.indexOfNewPlaylistBtn].leaveEvent = lambda event, i = self.ui.indexOfNewPlaylistBtn: self.leaveEvent5(event, i)
 
         else:
             pass
@@ -95,8 +96,11 @@ class Main:
         self.database.readNameOfPlaylist()
         self.ui.videoPagePlaylistNameLabel.setText(self.database.selectedPlaylistName)
 
+        self.database.readSelectedPlaylistVideoInfo()
+
+        self.ui.displayVideo()
         self.ui.screen.setCurrentIndex(6)
-        self.video = video.Video(self.ui)
+        self.video = video.Video(self.ui, self.database)
 
 
     def deletePlaylistBtnEvent(self):
