@@ -1,10 +1,9 @@
 import video
 
 class Main:
-    def __init__(self, ui, database, account):
+    def __init__(self, ui, database):
         self.ui = ui
         self.database = database
-        self.account = account
         self.video = None
 
         self.ui.mainPageProfileBtn.clicked.connect(self.profileBtnEvent)
@@ -155,7 +154,7 @@ class Main:
     def leaveEvent5(self, event, index):
         self.ui.mainPageDeletePlaylistBtns[index].setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png)")
 
-    def resetEnterLeaveEvent5(self):
+    def resetEnterLeaveEvent5(self): #lambda 이벤트 해제하는 법: None으로 바꾸기
         for index in range(0, len(self.ui.mainPageDeletePlaylistBtns)):
             self.ui.mainPageDeletePlaylistBtns[index].enterEvent = lambda event, i=index: self.enterEvent5(event, i)
             self.ui.mainPageDeletePlaylistBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent5(event, i)

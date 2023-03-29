@@ -1,4 +1,4 @@
-import database, main, re
+import main, re
 
 class Account:
     def __init__(self, ui, database):
@@ -30,9 +30,14 @@ class Account:
         self.ui.findIdPageFindBtn.enterEvent = lambda event: self.enterEvent2(self.ui.findIdPageFindBtn, event)
         self.ui.findIdPageFindBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.findIdPageFindBtn, event)
 
+        self.ui.findIdPageEdit.textChanged.connect(self.findIdPageEditChangeEvent)
+
         self.ui.findPwPageFindBtn.clicked.connect(self.findPwPageFindBtnEvent)
         self.ui.findPwPageFindBtn.enterEvent = lambda event: self.enterEvent2(self.ui.findPwPageFindBtn, event)
         self.ui.findPwPageFindBtn.leaveEvent = lambda event: self.leaveEvent2(self.ui.findPwPageFindBtn, event)
+
+        for index in range(0, len(self.ui.findPwPageEdits)):
+            self.ui.findPwPageEdits[index].textChanged.connect(lambda event, i=index: self.findPwPageEditChangeEvent(event, i))
 
         self.ui.joinPageEdits[0].textChanged.connect(self.nameCheckEvent)
         self.ui.joinPageEdits[1].textChanged.connect(self.idCheckEvent)
@@ -102,8 +107,6 @@ class Account:
             if self.database.matchLoginIndex == 0:
                 self.ui.loginPageNoticeLabel.setText("아이디와 비밀번호가 일치하지 않습니다")
             else:
-                # self.main = main.Main(self.ui, self.database, self)
-
                 self.database.loggedId = info[0]
                 self.database.readLoggedIdPlaylistInfo()
                 #여기까지 실행되면 database의 id변수와 playlist(list)변수가 만들어짐
@@ -116,7 +119,7 @@ class Account:
                 for index in range(0, len(self.ui.loginPageEdits)):
                     self.ui.loginPageEdits[index].clear()
 
-                self.main = main.Main(self.ui, self.database, self)
+                self.main = main.Main(self.ui, self.database)
 #-------------------------------------------------------------------------------------[ 아이디 찾기 함수 ]
 
     def findIdPageFindBtnEvent(self):
@@ -128,6 +131,9 @@ class Account:
         else:
             self.ui.findIdPageNoticeLabel.setText("귀하의 아이디는 " + self.database.idFinded + "입니다")
 
+    #(피드백)change event로 안내문구 초기화하기
+    def findIdPageEditChangeEvent(self):
+        self.ui.findIdPageNoticeLabel.setText("가입시 입력한 메일주소를 입력하세요")
 #-------------------------------------------------------------------------------------[ 비밀번호 찾기 함수 ]
 
     def findPwPageFindBtnEvent(self):
@@ -144,6 +150,10 @@ class Account:
                 self.ui.findPwPageNoticeLabel.setText("아이디 또는 메일주소를 잘못 입력하셨습니다")
             else:
                 self.ui.findPwPageNoticeLabel.setText("귀하의 비밀번호는 " + self.database.pwFinded + "입니다")
+
+    #(피드백)change event로 안내문구 초기화하기
+    def findPwPageEditChangeEvent(self, event, index):
+        self.ui.findPwPageNoticeLabel.setText("가입시 입력한 아이디와 메일주소를 입력하세요")
 
 #-------------------------------------------------------------------------------------[ 이름 유효성 검사 함수 ]
 
@@ -203,7 +213,9 @@ class Account:
         phone = self.ui.joinPageEdits[3].text()
         regexPhone = re.compile("^(01)\d{1}-\d{3,4}-\d{4}$")
         validation = regexPhone.search(phone.replace(" ", ""))
-        if validation:
+        if phone == "":
+            pass
+        elif validation:
             self.ui.joinPageNoticeLabel.setText("")
             self.phoneCheck = True
         else:
@@ -215,9 +227,11 @@ class Account:
     def mailCheckEvent(self):
         mail = self.ui.joinPageEdits[4].text()
         REGEX_EMAIL = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
-        if not re.fullmatch(REGEX_EMAIL, mail):
-            self.ui.joinPageNoticeLabel.setText("유효하지 않은 메일주소입니다")
-            self.mailCheck = False
+        if mail == "":
+            pass
+        elif not re.fullmatch(REGEX_EMAIL, mail):
+                self.ui.joinPageNoticeLabel.setText("유효하지 않은 메일주소입니다")
+                self.mailCheck = False
         else:
             self.database.joinMail = mail
             self.database.checkJoinMail()
@@ -229,37 +243,36 @@ class Account:
                 self.mailCheck = False
 
 #-------------------------------------------------------------------------------------[ 회원가입 함수 ]
-
-    def joinBtnEvent(self):
+    #(피드백)코드 구조를 if, elif 로 구성하고 마지막에만 else로 만들어보기
+    def joinBtnEvent(self): 
         checks = [self.nameCheck, self.idCheck, self.pwCheck, self.phoneCheck, self.mailCheck]
         if None in checks:
             self.ui.joinPageNoticeLabel.setText("모든 정보를 입력해주세요")
+        elif self.nameCheck == False:
+            self.ui.joinPageNoticeLabel.setText("이름을 올바르게 입력해주세요")
+        elif self.idCheck == False:
+            self.ui.joinPageNoticeLabel.setText("아이디를 올바르게 입력해주세요")
+        elif self.pwCheck == False:
+            self.ui.joinPageNoticeLabel.setText("비밀번호를 올바르게 입력해주세요")
+        elif self.phoneCheck == False:
+            self.ui.joinPageNoticeLabel.setText("휴대전화번호를 올바르게 입력해주세요")
+        elif self.mailCheck == False:
+            self.ui.joinPageNoticeLabel.setText("메일주소를 올바르게 입력해주세요")
         else:
-            if self.nameCheck == False:
-                self.ui.joinPageNoticeLabel.setText("이름을 올바르게 입력해주세요")
-            else:
-                if self.idCheck == False:
-                    self.ui.joinPageNoticeLabel.setText("아이디를 올바르게 입력해주세요")
-                else:
-                    if self.pwCheck == False:
-                        self.ui.joinPageNoticeLabel.setText("비밀번호를 올바르게 입력해주세요")
-                    else:
-                        if self.phoneCheck == False:
-                            self.ui.joinPageNoticeLabel.setText("휴대전화번호를 올바르게 입력해주세요")
-                        else:
-                            if self.mailCheck == False:
-                                self.ui.joinPageNoticeLabel.setText("메일주소를 올바르게 입력해주세요")
-                            else:
-                                self.ui.joinPageNoticeLabel.setText("가입을 축하합니다. 로그인 후 이용해주세요")
-                                info=[]
-                                for index in range (0, len(self.ui.joinPageEdits)):
-                                    info.append(self.ui.joinPageEdits[index].text())
-                                self.database.joinInfo = info                                
-                                self.database.createJoinInfo()
+            info=[]
+            for index in range (0, len(self.ui.joinPageEdits)):
+                info.append(self.ui.joinPageEdits[index].text())
+            self.database.joinInfo = info
+            self.database.createJoinInfo()
 
-#-------------------------------------------------------------------------------------[ 프로필 함수 ]
+            self.nameCheck = None
+            self.idCheck = None
+            self.pwCheck = None
+            self.phoneCheck = None
+            self.mailCheck = None
+            
+            #(피드백)중복예외처리(join 두번 눌렀을 때)               
+            for index in range (0, len(self.ui.joinPageEdits)):
+                self.ui.joinPageEdits[index].clear()
+            self.ui.joinPageNoticeLabel.setText("가입을 축하합니다. 로그인 후 이용해주세요")
 
-    # def loadProfileInfo(self):
-    #     self.database.readProfileInfo()
-    #     for index in range (0, len(self.database.profileInfoRead[0])):
-    #         self.ui.myInfoPageEdits[index].setText(str(self.database.profileInfoRead[0][index]))
