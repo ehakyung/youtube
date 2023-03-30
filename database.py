@@ -85,7 +85,7 @@ class Database:
         self.selectedPlaylistName = result[0][0]
 
     def readSelectedPlaylistVideoInfo(self):
-        self.cursor.execute("SELECT title, indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
+        self.cursor.execute("SELECT title, author, view, thumb, indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
         self.videosOfSelectedPlaylist = self.cursor.fetchall()
 
     def createVideo(self):
@@ -102,6 +102,18 @@ class Database:
     def readIndiceOfVideo(self):
         self.cursor.execute("SELECT indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
         self.indiceOfVideo = self.cursor.fetchall()
+
+    def deleteVideo(self):
+        self.cursor.execute("DELETE FROM video WHERE indexOfVideo =?", [self.indexOfDeletedVideo])
+        self.connect.commit()
+
+    def readNewVideoInfo(self):
+        self.cursor.execute("SELECT title, author, view, thumb FROM video WHERE indexOfVideo=?", [self.indiceOfVideo[-1][0]]) 
+        result = self.cursor.fetchall()
+        self.newTitle = result[0][0]
+        self.newAuthor = result[0][1]
+        self.newView = result[0][2]
+        self.newThumb = result[0][3]
 
     def logoutSetting(self):
         self.loginInfo = None
@@ -139,6 +151,15 @@ class Database:
         self.streamingUrl = None
 
         self.videosOfSelectedPlaylist = None
+
+        self.newTitle = None
+        self.newAuthor = None
+        self.newView = None
+        self.newThumb = None
+
+        self.indiceOfVideo = None
+        self.indexOfDeletedVideo = None
+
 
 # if __name__ == "__main__":
 #     db=Database()

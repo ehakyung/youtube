@@ -351,10 +351,10 @@ class Ui:
 
         # Notice Label
         self.videoPageEmptyLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        self.videoPageEmptyLabel.setGeometry(420, 440, 360, 20)
+        self.videoPageEmptyLabel.setGeometry(195,390, 360, 20)
         self.videoPageEmptyLabel.setStyleSheet(self.transparentLabelStyle)
         self.videoPageEmptyLabel.setFont(self.font16)
-        self.videoPageEmptyLabel.setText("재생할 영상이 없습니다")
+        self.videoPageEmptyLabel.setText("재생 중인 영상이 없습니다")
         self.videoPageEmptyLabel.setAlignment(self.alignCenter)
 
         # Label(재생목록 아이콘)
@@ -374,22 +374,22 @@ class Ui:
         # self.videoPagePlaylistCurrentVideoLabel.setGeometry(20, 200, 710, 400)
         # self.videoPagePlaylistCurrentVideoLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
 
-        # # Label(재생옵션버튼 상자)
-        # self.videoPagePlayOptionLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        # self.videoPagePlayOptionLabel.setGeometry(20, 620, 110, 34)
-        # self.videoPagePlayOptionLabel.setStyleSheet(self.videoPagePlayOptionLabelStyle)
+        # Label(재생옵션버튼 상자)
+        self.videoPagePlayOptionLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        self.videoPagePlayOptionLabel.setGeometry(20, 620, 110, 34)
+        self.videoPagePlayOptionLabel.setStyleSheet(self.videoPagePlayOptionLabelStyle)
 
-        # # Option Button
-        # self.videoPagePlayOptionBtns = []
-        # self.iconOfVideoPagePlayOptionBtns = ["background-image: url(/Users/ehakyung/Desktop/Youtube/image/playBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/pauseBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/stopBtn.png);"]
-        # for index in range (0, 3):
-        #     tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
-        #     if index==2:
-        #         tmpBtn.setGeometry(100, 628, 20, 22)
-        #     else:    
-        #         tmpBtn.setGeometry(32.5+(index*32.5), 627, 20, 22)
-        #     tmpBtn.setStyleSheet(self.iconOfVideoPagePlayOptionBtns[index] + self.backgroundTransparent + "background-repeat: no-repeat;")
-        #     self.videoPagePlayOptionBtns.append(tmpBtn)
+        # Option Button
+        self.videoPagePlayOptionBtns = []
+        self.iconOfVideoPagePlayOptionBtns = ["background-image: url(/Users/ehakyung/Desktop/Youtube/image/playBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/pauseBtn.png);", "background-image: url(/Users/ehakyung/Desktop/Youtube/image/stopBtn.png);"]
+        for index in range (0, 3):
+            tmpBtn = QtWidgets.QPushButton(self.pagesOfScreen[6])
+            if index==2:
+                tmpBtn.setGeometry(100, 628, 20, 22)
+            else:    
+                tmpBtn.setGeometry(32.5+(index*32.5), 627, 20, 22)
+            tmpBtn.setStyleSheet(self.iconOfVideoPagePlayOptionBtns[index] + self.backgroundTransparent + "background-repeat: no-repeat;")
+            self.videoPagePlayOptionBtns.append(tmpBtn)
 
         # # Label(재생 중인 영상 제목)
         # self.videoPageCurrentVideoNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
@@ -574,8 +574,8 @@ class Ui:
         if len(database.videosOfSelectedPlaylist) == 0:
             self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 890)
         elif len(database.videosOfSelectedPlaylist) != 0:
-            self.videoPageEmptyLabel.hide()
-            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*100)
+            # self.videoPageEmptyLabel.hide()
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*104)
 
         for index in range(0, len(database.videosOfSelectedPlaylist)):
 
@@ -598,14 +598,14 @@ class Ui:
             tmpLabel2.setGeometry(170, 50+index*104, 220, 15)
             tmpLabel2.setStyleSheet(self.transparentLabelStyle)
             tmpLabel2.setFont(self.font12)
-            tmpLabel2.setText("임시작가")
+            tmpLabel2.setText(database.videosOfSelectedPlaylist[index][1])
             self.videoPageVideoAuthorLabels.append(tmpLabel2)
 
             tmpLabel3 = QtWidgets.QLabel(self.videoPageWidgetForScoll)
             tmpLabel3.setGeometry(170, 65+index*104, 220, 15)
             tmpLabel3.setStyleSheet(self.transparentLabelStyle)
             tmpLabel3.setFont(self.font12)
-            tmpLabel3.setText("임시조회수")
+            tmpLabel3.setText(str(database.videosOfSelectedPlaylist[index][2]))
             self.videoPageVideoViewLabels.append(tmpLabel3)
 
             tmpBtn2 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
@@ -614,7 +614,7 @@ class Ui:
                 "background-image: url(/Users/ehakyung/Desktop/Youtube/image/deletePlaylistBtn.png);" +
                 "background-repeat: no-repeat;" +
                 "background-position: center;")
-            tmpBtn2.setObjectName(str(database.videosOfSelectedPlaylist[index][1]))
+            tmpBtn2.setObjectName(str(database.videosOfSelectedPlaylist[index][4]))
             self.videoPageDeleteVideoBtns.append(tmpBtn2)
 
         self.videoPageScrollArea=QtWidgets.QScrollArea(self.pagesOfScreen[6])
@@ -624,16 +624,17 @@ class Ui:
 
     def clearVideoPage(self):
         for index in range(0, len(self.videoPageVideoBtns)):
-            if self.videoPageVideoBtns != []:
-                self.videoPageVideoBtns[index].deleteLater()
-            if self.videoPageVideoNameLabels != []:
-                self.videoPageVideoNameLabels[index].deleteLater()
-            if self.videoPageVideoAuthorLabels != []:
-                self.videoPageVideoAuthorLabels[index].deleteLater()
-            if self.videoPageVideoViewLabels != []:
-                self.videoPageVideoViewLabels[index].deleteLater()
-            if self.videoPageDeleteVideoBtns != []:
-                self.videoPageDeleteVideoBtns[index].deleteLater()
+            self.videoPageVideoBtns[index].deleteLater()
+            self.videoPageVideoNameLabels[index].deleteLater()
+            self.videoPageVideoAuthorLabels[index].deleteLater()
+            self.videoPageVideoViewLabels[index].deleteLater()
+            self.videoPageDeleteVideoBtns[index].deleteLater()
+        
+        self.videoPageVideoBtns = []
+        self.videoPageVideoNameLabels = []
+        self.videoPageVideoAuthorLabels = []
+        self.videoPageVideoViewLabels = []
+        self.videoPageDeleteVideoBtns = []
 
     def addVideo(self):
         if self.indexOfNewVideoBtn < 7:  
@@ -641,7 +642,7 @@ class Ui:
             self.videoPageScrollArea.setWidgetResizable(False)
         else:
             print(self.indexOfNewVideoBtn)
-            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*100)
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*104)
             self.videoPageScrollArea.setWidgetResizable(False)
 
         tmpBtn1 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
@@ -668,7 +669,7 @@ class Ui:
         tmpLabel1.setFont(self.font14)
         tmpLabel1.setAlignment(self.alignLeft)
         tmpLabel1.setWordWrap(True)
-        tmpLabel1.setText("임시제목")
+        tmpLabel1.setText(database.newTitle)
         self.videoPageVideoNameLabels.append(tmpLabel1)
         self.videoPageVideoNameLabels[self.indexOfNewVideoBtn].show()
 
@@ -685,7 +686,7 @@ class Ui:
         tmpLabel2.setGeometry(170, 50+self.indexOfNewVideoBtn*104, 220, 15)
         tmpLabel2.setStyleSheet(self.transparentLabelStyle)
         tmpLabel2.setFont(self.font12)
-        tmpLabel2.setText("임시작가")
+        tmpLabel2.setText(database.newAuthor)
         self.videoPageVideoAuthorLabels.append(tmpLabel2)
         self.videoPageVideoAuthorLabels[self.indexOfNewVideoBtn].show()
 
@@ -700,7 +701,7 @@ class Ui:
         tmpLabel3.setGeometry(170, 65+self.indexOfNewVideoBtn*104, 220, 15)
         tmpLabel3.setStyleSheet(self.transparentLabelStyle)
         tmpLabel3.setFont(self.font12)
-        tmpLabel3.setText("임시조회수")
+        tmpLabel3.setText(str(database.newView))
         self.videoPageVideoViewLabels.append(tmpLabel3)
         self.videoPageVideoViewLabels[self.indexOfNewVideoBtn].show()
 
@@ -733,10 +734,41 @@ class Ui:
 
 
     def deleteVideo(self):
-        pass
+        self.videoPageVideoBtns[int(self.deletedVideoBtnIndex)].deleteLater()
+        self.videoPageVideoNameLabels[int(self.deletedVideoBtnIndex)].deleteLater()
+        self.videoPageVideoAuthorLabels[int(self.deletedVideoBtnIndex)].deleteLater()
+        self.videoPageVideoViewLabels[int(self.deletedVideoBtnIndex)].deleteLater()
+        self.videoPageDeleteVideoBtns[int(self.deletedVideoBtnIndex)].deleteLater()
+
+        del self.videoPageVideoBtns[int(self.deletedVideoBtnIndex)]
+        del self.videoPageVideoNameLabels[int(self.deletedVideoBtnIndex)]
+        del self.videoPageVideoAuthorLabels[int(self.deletedVideoBtnIndex)]
+        del self.videoPageVideoViewLabels[int(self.deletedVideoBtnIndex)]
+        del self.videoPageDeleteVideoBtns[int(self.deletedVideoBtnIndex)]
+
+        self.resetVideoGeometry()
+        # if self.mainPagePlaylistBtns == [] :
+        #     self.mainPageEmptyLabel.show()
+        # self.mainWindow.update()
 
     def resetVideoGeometry(self):
-        pass
+        if len(self.videoPageDeleteVideoBtns) <= 7 :
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 890)
+            self.videoPageScrollArea.setWidgetResizable(False)
+        else:
+            print(len(self.videoPageDeleteVideoBtns))
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(self.videoPageDeleteVideoBtns)*104)
+            self.videoPageScrollArea.setWidgetResizable(False)
+
+        if int(self.deletedVideoBtnIndex) < len(self.videoPageDeleteVideoBtns):
+            for index in range(int(self.deletedVideoBtnIndex), len(self.videoPageDeleteVideoBtns)):
+                self.videoPageVideoBtns[index].setGeometry(0, index*104, 168, 94)
+                self.videoPageVideoNameLabels[index].setGeometry(170, 3+index*104, 220, 42)
+                self.videoPageVideoAuthorLabels[index].setGeometry(170, 50+index*104, 220, 15)
+                self.videoPageVideoViewLabels[index].setGeometry(170, 65+index*104, 220, 15)
+                self.videoPageDeleteVideoBtns[index].setGeometry(390, 3+index*104, 20, 20)
+        else:
+            pass
 
     def messageBoxPopUp(self, index):
         self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다"]
@@ -788,6 +820,8 @@ class Ui:
         self.videoPageVideoAuthorLabels = []
         self.videoPageVideoViewLabels = []
         self.videoPageDeleteVideoBtns = []
+
+        self.deletedVideoBtnIndex = None
 
 if __name__ == "__main__":
     
