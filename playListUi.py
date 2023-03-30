@@ -1,4 +1,4 @@
-import sys, account, database
+import sys, account, database, urllib.request
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 class Ui:
@@ -581,8 +581,22 @@ class Ui:
 
             tmpBtn1 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
             tmpBtn1.setGeometry(0, index*104, 168, 94)
-            tmpBtn1.setStyleSheet("border: 1px solid white;")
-            tmpBtn1.setObjectName(str(database.videosOfSelectedPlaylist[index][1]))
+
+            thumb = urllib.request.urlopen(database.videosOfSelectedPlaylist[index][3]).read()
+
+            pixmap = QtGui.QPixmap()
+            pixmap.loadFromData(thumb)
+            pixmap = pixmap.scaled(168, 94)
+
+            icon = QtGui.QIcon()
+            icon.addPixmap(pixmap)
+            tmpBtn1.setIcon(icon)
+            tmpBtn1.setIconSize(QtCore.QSize(168, 94))
+            
+            # tmpBtn1.setStyleSheet("background-image: url ({database.videosOfSelectedPlaylist[index][3]});")
+
+            tmpBtn1.setStyleSheet(self.radius10)
+            tmpBtn1.setObjectName(str(database.videosOfSelectedPlaylist[index][4]))
             self.videoPageVideoBtns.append(tmpBtn1)
 
             tmpLabel1 = QtWidgets.QLabel(self.videoPageWidgetForScoll)
@@ -606,6 +620,7 @@ class Ui:
             tmpLabel3.setStyleSheet(self.transparentLabelStyle)
             tmpLabel3.setFont(self.font12)
             tmpLabel3.setText(str(database.videosOfSelectedPlaylist[index][2]))
+            tmpLabel3.setText("조회수 "+str(round(database.videosOfSelectedPlaylist[index][2]/10000))+"만회")
             self.videoPageVideoViewLabels.append(tmpLabel3)
 
             tmpBtn2 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
@@ -647,6 +662,18 @@ class Ui:
 
         tmpBtn1 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
         tmpBtn1.setGeometry(0, self.indexOfNewVideoBtn*104, 168, 94)
+
+        thumb = urllib.request.urlopen(database.newThumb).read()
+
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(thumb)
+        pixmap = pixmap.scaled(168, 94)
+
+        icon = QtGui.QIcon()
+        icon.addPixmap(pixmap)
+        tmpBtn1.setIcon(icon)
+        tmpBtn1.setIconSize(QtCore.QSize(168, 94))
+
         tmpBtn1.setStyleSheet("border: 1px solid white;")
         tmpBtn1.setObjectName(str(self.indexOfNewVideo))
         self.videoPageVideoBtns.append(tmpBtn1)
@@ -701,7 +728,7 @@ class Ui:
         tmpLabel3.setGeometry(170, 65+self.indexOfNewVideoBtn*104, 220, 15)
         tmpLabel3.setStyleSheet(self.transparentLabelStyle)
         tmpLabel3.setFont(self.font12)
-        tmpLabel3.setText(str(database.newView))
+        tmpLabel3.setText("조회수 "+str(round(database.newView/10000))+"만회")
         self.videoPageVideoViewLabels.append(tmpLabel3)
         self.videoPageVideoViewLabels[self.indexOfNewVideoBtn].show()
 
@@ -730,7 +757,7 @@ class Ui:
         #     "background-repeat: no-repeat;" +
         #     "background-position: center;")
 
-        self.videoPageEmptyLabel.hide()
+        # self.videoPageEmptyLabel.hide()
 
 
     def deleteVideo(self):
@@ -771,7 +798,7 @@ class Ui:
             pass
 
     def messageBoxPopUp(self, index):
-        self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다"]
+        self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다", "URL이 잘못되었거나 영상을 불러올 수 없습니다"]
         self.msgBox = QtWidgets.QMessageBox(self.mainWindow)
         self.msgBox.setText(self.textOfDialog[index])
         if index < 3:

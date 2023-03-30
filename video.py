@@ -18,7 +18,7 @@ class Video:
 
 
     def addUrlBtnEvent(self):
-        # try:
+        try:
             self.database.createVideo()
 
             self.database.readIndiceOfVideo()
@@ -34,8 +34,11 @@ class Video:
             self.ui.videoPageDeleteVideoBtns[self.ui.indexOfNewVideoBtn].enterEvent = lambda event, i = self.ui.indexOfNewVideoBtn: self.enterEvent2(event, i)
             self.ui.videoPageDeleteVideoBtns[self.ui.indexOfNewVideoBtn].leaveEvent = lambda event, i = self.ui.indexOfNewVideoBtn: self.leaveEvent2(event, i)
             
-        # except:
-        #     print("실패")
+            self.ui.videoPageUrlEdit.clear()
+        except:
+            self.ui.messageBoxPopUp(5)
+            self.ui.videoPageUrlEdit.clear()
+
 
     def deleteVideoBtnEvent(self):
         self.ui.messageBoxPopUp(2)
@@ -61,11 +64,6 @@ class Video:
             pass
         
         self.ui.reply = None
-
-
-
-
-        print("성공")
 
     def videoBtnEvent(self, event, index):
         pass

@@ -1,4 +1,4 @@
-import sqlite3, pafy
+import sqlite3, pafy, urllib.request
 
 class Database:
     def __init__(self, ui):
