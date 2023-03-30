@@ -392,27 +392,24 @@ class Ui:
             self.videoPagePlayOptionBtns.append(tmpBtn)
 
         # # Label(재생 중인 영상 제목)
-        # self.videoPageCurrentVideoNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        # self.videoPageCurrentVideoNameLabel.setGeometry(20, 670, 710, 63)
-        # self.videoPageCurrentVideoNameLabel.setStyleSheet(self.transparentLabelStyle + self.fontSemibold)
-        # self.videoPageCurrentVideoNameLabel.setFont(self.font20)
-        # self.videoPageCurrentVideoNameLabel.setAlignment(self.alignLeft)
-        # self.videoPageCurrentVideoNameLabel.setWordWrap(True)
-        # self.videoPageCurrentVideoNameLabel.setText("Playlist 따사로운 봄을 기다리며 spring pop 🌱🌼")
+        self.videoPageCurrentVideoNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        self.videoPageCurrentVideoNameLabel.setGeometry(20, 670, 710, 63)
+        self.videoPageCurrentVideoNameLabel.setStyleSheet(self.transparentLabelStyle + self.fontSemibold)
+        self.videoPageCurrentVideoNameLabel.setFont(self.font20)
+        self.videoPageCurrentVideoNameLabel.setAlignment(self.alignLeft)
+        self.videoPageCurrentVideoNameLabel.setWordWrap(True)
 
         # # Label(재생 중인 영상 채널명)
-        # self.videoPageCurrentVideoChannelLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        # self.videoPageCurrentVideoChannelLabel.setGeometry(20, 735, 700, 30)
-        # self.videoPageCurrentVideoChannelLabel.setStyleSheet(self.transparentLabelStyle)
-        # self.videoPageCurrentVideoChannelLabel.setFont(self.font16)
-        # self.videoPageCurrentVideoChannelLabel.setText("때껄룩 TAKE A LOOK")
+        self.videoPageCurrentVideoChannelLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        self.videoPageCurrentVideoChannelLabel.setGeometry(20, 735, 700, 30)
+        self.videoPageCurrentVideoChannelLabel.setStyleSheet(self.transparentLabelStyle)
+        self.videoPageCurrentVideoChannelLabel.setFont(self.font16)
 
         # # Label(재생 중인 영상 조회수)
-        # self.videoPageCurrentVideoViewLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        # self.videoPageCurrentVideoViewLabel.setGeometry(20, 765, 700, 30)
-        # self.videoPageCurrentVideoViewLabel.setStyleSheet(self.transparentLabelStyle)
-        # self.videoPageCurrentVideoViewLabel.setFont(self.font16)
-        # self.videoPageCurrentVideoViewLabel.setText("조회수 68만")
+        self.videoPageCurrentVideoViewLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
+        self.videoPageCurrentVideoViewLabel.setGeometry(20, 765, 700, 30)
+        self.videoPageCurrentVideoViewLabel.setStyleSheet(self.transparentLabelStyle)
+        self.videoPageCurrentVideoViewLabel.setFont(self.font16)
 
         # # Videolist Button
         # self.videoPageVideolistBtn = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
@@ -645,11 +642,17 @@ class Ui:
             self.videoPageVideoViewLabels[index].deleteLater()
             self.videoPageDeleteVideoBtns[index].deleteLater()
         
+        self.vlcFrame.deleteLater()
         self.videoPageVideoBtns = []
         self.videoPageVideoNameLabels = []
         self.videoPageVideoAuthorLabels = []
         self.videoPageVideoViewLabels = []
         self.videoPageDeleteVideoBtns = []
+
+
+        self.ui.videoPageCurrentVideoNameLabel.clear()
+        self.ui.videoPageCurrentVideoChannelLabel.clear()
+        self.ui.videoPageCurrentVideoViewLabel.clear()
 
     def addVideo(self):
         if self.indexOfNewVideoBtn < 7:  
@@ -797,6 +800,11 @@ class Ui:
         else:
             pass
 
+
+    def makeVlcFrame(self):
+        self.vlcFrame = QtWidgets.QFrame(self.centralWidget)
+        self.vlcFrame.setGeometry(20, 200, 710, 400)
+
     def messageBoxPopUp(self, index):
         self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록을 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다", "URL이 잘못되었거나 영상을 불러올 수 없습니다"]
         self.msgBox = QtWidgets.QMessageBox(self.mainWindow)
@@ -818,6 +826,8 @@ class Ui:
         
             if tmpReply == QtWidgets.QMessageBox.Ok:
                 self.reply = 1
+            elif tmpReply == QtWidgets.QMessageBox.No:
+                self.reply ==0
 
     def inputDialogPopUp(self):
         text, ok = QtWidgets.QInputDialog.getText(self.mainWindow, "", "재생목록의 이름을 입력하세요(20자 이내)")
@@ -849,6 +859,7 @@ class Ui:
         self.videoPageDeleteVideoBtns = []
 
         self.deletedVideoBtnIndex = None
+        # self.selectedVideoBtnIndex = None
 
 if __name__ == "__main__":
     

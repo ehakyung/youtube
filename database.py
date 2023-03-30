@@ -67,6 +67,25 @@ class Database:
         result = self.cursor.fetchall()
         self.checkPlaylistNameIndex = len(result)
 
+    def readFirstVideoThumb(self):
+        self.playlistIndexOfLoggedId = []
+        self.firstVideoOfPlaylist = []
+        self.firstVideoThumbOfPlaylist = []
+        for index in range (0, len(self.playlistOfLoggedId)):
+            self.playlistIndexOfLoggedId.append(self.playlistOfLoggedId[index][1])
+        for index in self.playlistOfLoggedId:
+            self.cursor.execute("SELECT indexOfVideo FROM video WHERE indexOfList=?", [index])
+            result = self.cursor.fetchall()
+            tmpVideoIndexOfPlaylist = []
+            for index in range(0, len(result)):
+                tmpVideoIndexOfPlaylist.append(result[index][0])
+            self.firstVideoOfPlaylist.append(min(tmpVideoIndexOfPlaylist))
+        for index in self.firstVideoOfPlaylist:
+            self.cursor.execute("SELECT thumb FROM video WHERE indexOfVideo=?", [index])
+            result = self.cursor.fetchall()
+            self.firstVideoThumbOfPlaylist.append(result[index][0])
+        
+
     def createPlaylist(self):
         self.cursor.execute("INSERT INTO playlist (id, nameOfList) VALUES (?, ?)", [self.loggedId, self.playlistName])
         self.connect.commit()
@@ -83,6 +102,10 @@ class Database:
         self.cursor.execute("SELECT nameOfList FROM playlist WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
         result = self.cursor.fetchall()
         self.selectedPlaylistName = result[0][0]
+
+    # def findIndexOfSelectedPlaylistBtn(self):
+    #     self.readIndiceOfPlaylist()
+
 
     def readSelectedPlaylistVideoInfo(self):
         self.cursor.execute("SELECT title, author, view, thumb, indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
@@ -115,11 +138,19 @@ class Database:
         self.newView = result[0][2]
         self.newThumb = result[0][3]
 
+    def readCurrentVideoInfo(self):
+        self.cursor.execute("SELECT title, author, view, streamingUrl FROM video WHERE indexOfVideo=?", [self.selectedVideoBtnIndex])
+        self.currentVideoInfo = self.cursor.fetchall()
+        print(self.currentVideoInfo)
+
     def logoutSetting(self):
         self.loginInfo = None
         self.matchLoginIndex = None
         self.loggedId = None
         self.playlistOfLoggedId = None
+        self.playlistIndexOfLoggedId = None
+        self.firstVideoOfPlaylist = None
+        self.firstVideoThumbOfPlaylist = None
         self.nameOfLoggedId = None
 
         self.findIdInfo = None
@@ -159,7 +190,9 @@ class Database:
 
         self.indiceOfVideo = None
         self.indexOfDeletedVideo = None
+        self.currentVideoInfo = None
 
+        self.selectedVideoBtnIndex = None
 
 # if __name__ == "__main__":
 #     db=Database()

@@ -19,6 +19,9 @@ class Main:
             self.ui.homeBtns[index].enterEvent = lambda event, i=index: self.enterEvent4(event, i)
             self.ui.homeBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent4(event, i)
 
+        # self.ui.homeBtns[0].clicked.connect(self.homeBtnEvent)
+
+
         self.ui.mainPageAddPlaylistBtn.clicked.connect(self.addPlaylistBtnEvent)
         self.ui.mainPageAddPlaylistBtn.enterEvent = lambda event: self.enterEvent3(event)
         self.ui.mainPageAddPlaylistBtn.leaveEvent = lambda event: self.leaveEvent3(event)
