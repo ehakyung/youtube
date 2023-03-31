@@ -6,8 +6,7 @@ class Video:
         self.ui = ui
         self.database = database
 
-        self.selectedVideoBtnIndex = None
-
+        self.logoutSetting()
 
         self.ui.videoPageAddUrlBtn.clicked.connect(self.addUrlBtnEvent)
         self.ui.videoPageAddUrlBtn.enterEvent = lambda event: self.enterEvent1(event)
@@ -83,10 +82,11 @@ class Video:
 
     def initPlayer(self):
         self.vlc = vlc.Instance("--network-caching=20000")
-        # self.vlc = vlc.Instance("--no-osd")
         self.player = self.vlc.media_player_new()
-        # self.media = None
         self.player.set_nsobject(int(self.ui.vlcFrame.winId()))
+
+        self.eventManager = self.player.event_manager()
+        self.eventManager.event_attach(vlc.EventType.MediaPlayerEndReached, lambda event: self.playNextVideo(event))
 
     def videoBtnEvent(self):
         self.ui.videoPageEmptyLabel.hide()
@@ -95,50 +95,21 @@ class Video:
         self.database.selectedVideoIndex = tmpIndex
         self.database.readIndiceOfVideo()
 
+        print(self.selectedVideoBtnIndex)
+
         tmpList=[]
         for index in range(0, len(self.database.indiceOfVideo)):
             tmpList.append(self.database.indiceOfVideo[index][0])
         self.selectedVideoBtnIndex = tmpList.index(int(tmpIndex))
-        # self.ui.selectedVideoBtnIndex = tmpBtnIndex
-
-        # print("선택된 비디오 인덱스(db):")
-        # print(self.database.selectedVideoIndex)
-
-        # print("해당 재생목록의 비디오 인덱스 리스트:")
-        # print(tmpList)
-
-        # print("tmpIndex의 타입")
-        # print(type(tmpIndex))
-
-        # print("선택된 버튼의 인덱스(ui):")
-        # print(self.ui.selectedVideoBtnIndex)
-        # print(tmpList.index(int(tmpIndex)))
-        # print(tmpBtnIndex)
-        # print(type(self.selectedVideoBtnIndex))
-        #여기까지 실행되면 몇번째 버튼의 video가 선택됐는지 알 수 있음
-
-        self.ui.vlcFrame.show()
-
-        self.eventManager = self.player.event_manager()
-        self.eventManager.event_attach(vlc.EventType.MediaPlayerEndReached, lambda event: self.playNextVideo(event))
-        # self.eventManager.event_attach(vlc.EventType.MediaPlayerEndReached, self.tmpftn)
-        # self.playCurrentVideo()
         self.database.readCurrentVideoInfo()
 
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
         self.player.play()
-        self.ui.vlcFrame.show()
+        # self.ui.vlcFrame.show()
 
         self.ui.videoPageCurrentVideoNameLabel.setText(self.database.currentVideoInfo[0][0])
         self.ui.videoPageCurrentVideoChannelLabel.setText(self.database.currentVideoInfo[0][1])
         self.ui.videoPageCurrentVideoViewLabel.setText("조회수 "+str(round((self.database.currentVideoInfo[0][2])/10000))+"만회")
-
-        # time.sleep(self.database.currentVideoInfo[0][4])
-
-        # while True:
-        #     if not self.player.is_playing():
-        #         self.tmpftn()
-        #         break
 
     def playCurrentVideo(self):
         self.database.readCurrentVideoInfo()
@@ -147,21 +118,16 @@ class Video:
         self.ui.videoPageCurrentVideoChannelLabel.setText(self.database.currentVideoInfo[0][1])
         self.ui.videoPageCurrentVideoViewLabel.setText("조회수 "+str(round((self.database.currentVideoInfo[0][2])/10000))+"만회")
 
-        # self.player.stop()
-        # self.player.set_mrl(self.database.currentVideoInfo[0][3])
-        # # self.ui.vlcFrame.hide()
-        # # self.player.stop()
-        # self.player.play()
-        # # self.ui.vlcFrame.show()
-
-        self.player.release()
         self.player = self.vlc.media_player_new()
-        # self.media = None
         self.player.set_nsobject(int(self.ui.vlcFrame.winId()))
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
+        self.player.stop()
         self.player.play()
 
-    def tmpftn(self):
+        self.eventManager = self.player.event_manager()
+        self.eventManager.event_attach(vlc.EventType.MediaPlayerEndReached, lambda event: self.playNextVideo(event))
+
+    def playNextVideo(self, event):
 
         self.database.readIndiceOfVideo()
 
@@ -176,10 +142,10 @@ class Video:
         if self.selectedVideoBtnIndex == len(tmpList)-1:
             tmpIndex = tmpList[0]
             self.database.selectedVideoIndex = tmpIndex
+            self.selectedVideoBtnIndex = 0
             self.playCurrentVideo()
 
         else:
-            # print(len(self.database.indiceOfVideo))
             self.selectedVideoBtnIndex += 1
             print(self.selectedVideoBtnIndex)
             tmpIndex = tmpList[self.selectedVideoBtnIndex]
@@ -188,20 +154,6 @@ class Video:
             print(self.database.selectedVideoIndex)
 
             self.playCurrentVideo()
-
-    def playNextVideo(self, event):
-        print("성공")
-        self.tmpftn()
-            # self.database.readCurrentVideoInfo()
-
-            # self.player.set_mrl(self.database.currentVideoInfo[0][3])
-            # self.player.play()
-            # # self.ui.vlcFrame.show()
-
-            # self.ui.videoPageCurrentVideoNameLabel.setText(self.database.currentVideoInfo[0][0])
-            # self.ui.videoPageCurrentVideoChannelLabel.setText(self.database.currentVideoInfo[0][1])
-            # self.ui.videoPageCurrentVideoViewLabel.setText("조회수 "+str(round((self.database.currentVideoInfo[0][2])/10000))+"만회")
-
 
     def playBtnEvent(self):
         if self.player.is_playing() == 0:
@@ -220,6 +172,7 @@ class Video:
         self.ui.videoPageCurrentVideoChannelLabel.clear()
         self.ui.videoPageCurrentVideoViewLabel.clear()
         self.ui.videoPageEmptyLabel.show()
+        self.ui.vlcFrame.hide()
         self.player.stop()
 
     def enterEvent1(self, event):
@@ -252,17 +205,14 @@ class Video:
     def leaveEvent5(self, event):
         self.ui.videoPagePlayOptionBtns[2].setStyleSheet("background-image: url(/Users/ehakyung/Desktop/Youtube/image/stopBtn.png);" + self.ui.backgroundTransparent + "background-repeat: no-repeat;")
 
-
-
-
-
     def resetEnterLeaveEvent2(self): #lambda 이벤트 해제하는 법: None으로 바꾸기
         for index in range(0, len(self.ui.videoPageDeleteVideoBtns)):
             self.ui.videoPageDeleteVideoBtns[index].enterEvent = lambda event, i=index: self.enterEvent2(event, i)
             self.ui.videoPageDeleteVideoBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent2(event, i)
 
-
-
-# if __name__ == "__main__":
-#     video = Video()
+    def logoutSetting(self):
+        self.selectedVideoBtnIndex = None
+        self.vlc = None
+        self.player = None
+        self.eventManager = None
 

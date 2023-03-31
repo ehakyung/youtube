@@ -50,8 +50,9 @@ class Main:
 
     def homeBtnEvent2(self):
         self.video.player.stop()
-        self.video.player.release()
-        self.ui.vlcFrame.hide()
+        # self.video.player.release()
+        # self.ui.vlcFrame.hide()
+        self.ui.videoPageAddUrlBtn.clicked.disconnect()
         self.ui.screen.setCurrentIndex(4)
         self.ui.clearVideoPage()
 
@@ -65,6 +66,8 @@ class Main:
             self.ui.clearMainPage()
             self.ui.logoutSetting()
             self.database.logoutSetting()
+            self.video.logoutSetting()
+            
         else:
             pass
         self.ui.reply = None            
@@ -119,8 +122,9 @@ class Main:
 
         self.ui.displayVideo()
         self.ui.videoPageEmptyLabel.show()
-        self.ui.vlcFrame.show()
+        # self.ui.vlcFrame.show()
         self.ui.screen.setCurrentIndex(6)
+
         self.video = video.Video(self.ui, self.database)
         self.video.initPlayer()
 

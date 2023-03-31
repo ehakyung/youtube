@@ -336,10 +336,10 @@ class Ui:
         self.videoPageCurrentVideoSectionWidget.setStyleSheet(
             "background-color: qlineargradient(spread:pad, x1:1, y1:0.977273, x2:0.0199005, y2:0.0227273, stop:0 rgba(17, 17, 17, 1), stop:1 rgba(255, 255, 255, 15));")
 
-        # Frame
-        self.vlcFrame = QtWidgets.QFrame(self.centralWidget)
-        self.vlcFrame.setGeometry(20, 200, 710, 400)
-        self.vlcFrame.setStyleSheet(self.backgroundTransparent)
+        # # Frame
+        # self.vlcFrame = QtWidgets.QFrame(self.centralWidget)
+        # self.vlcFrame.setGeometry(20, 200, 710, 400)
+        # self.vlcFrame.setStyleSheet(self.backgroundTransparent)
 
         # Edit(url 입력창)
         self.videoPageUrlEdit = QtWidgets.QLineEdit(self.pagesOfScreen[6])
@@ -367,17 +367,12 @@ class Ui:
         self.videoPagePlaylistIconLabel.setGeometry(20, 120, 40, 40)
         self.videoPagePlaylistIconLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/Desktop/Youtube/image/addPlaylistBtn.png"))
         self.videoPagePlaylistIconLabel.setAlignment(self.alignCenter)
-#------------------>
+
         # Label(재생목록명)
         self.videoPagePlaylistNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
         self.videoPagePlaylistNameLabel.setGeometry(83, 124, 400, 30)
         self.videoPagePlaylistNameLabel.setStyleSheet(self.transparentLabelStyle + self.fontSemibold)
         self.videoPagePlaylistNameLabel.setFont(self.font24)
-
-        # Label(재생중인 영상)
-        # self.videoPagePlaylistCurrentVideoLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
-        # self.videoPagePlaylistCurrentVideoLabel.setGeometry(20, 200, 710, 400)
-        # self.videoPagePlaylistCurrentVideoLabel.setPixmap(QtGui.QPixmap("/Users/ehakyung/homework9/image/thumbnail/thumb_1.webp"))
 
         # Label(재생옵션버튼 상자)
         self.videoPagePlayOptionLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
@@ -418,7 +413,7 @@ class Ui:
 
 #-------------------------------------------------------------------------------------[  ]
         self.mainWindow.show()
-        self.vlcFrame.hide()
+        # self.vlcFrame.hide()
 #=====================================================================================[ 위젯 생성/삭제/재배열 함수 ]
 
     def displayPlaylist(self):
@@ -554,6 +549,12 @@ class Ui:
         elif len(database.videosOfSelectedPlaylist) != 0:
             self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*104)
 
+        # Frame
+        self.vlcFrame = QtWidgets.QFrame(self.centralWidget)
+        self.vlcFrame.setGeometry(20, 200, 710, 400)
+        self.vlcFrame.setStyleSheet(self.backgroundTransparent)
+        self.vlcFrame.show()
+
         for index in range(0, len(database.videosOfSelectedPlaylist)):
 
             tmpBtn1 = QtWidgets.QPushButton(self.videoPageWidgetForScoll)
@@ -619,7 +620,7 @@ class Ui:
             self.videoPageVideoViewLabels[index].deleteLater()
             self.videoPageDeleteVideoBtns[index].deleteLater()
         
-        # self.vlcFrame.deleteLater()
+        self.vlcFrame.deleteLater()
 
         self.videoPageVideoBtns = []
         self.videoPageVideoNameLabels = []
