@@ -23,6 +23,22 @@ class Ui:
         self.urlBtn.setText("add")
         self.urlBtn.clicked.connect(self.clickEvent)
 
+        self.volumeBtn = QtWidgets.QPushButton(self.centralWidget)
+        self.volumeBtn.setGeometry(950, 150, 50, 30)
+        self.volumeBtn.setText("50")
+        self.volumeBtn.clicked.connect(self.volume50BtnEvent)
+
+        self.volumeBtn2 = QtWidgets.QPushButton(self.centralWidget)
+        self.volumeBtn2.setGeometry(950, 200, 50, 30)
+        self.volumeBtn2.setText("20")
+        self.volumeBtn2.clicked.connect(self.volume20BtnEvent)
+
+        self.volumeBtn3 = QtWidgets.QPushButton(self.centralWidget)
+        self.volumeBtn3.setGeometry(950, 250, 50, 30)
+        self.volumeBtn3.setText("100")
+        self.volumeBtn3.clicked.connect(self.volume100BtnEvent)
+
+
         self.thumbLabel = QtWidgets.QLabel(self.centralWidget)
         self.thumbLabel.setGeometry(1000, 100, 400, 400)
     
@@ -85,9 +101,13 @@ class Ui:
             pixmap.loadFromData(thumb)
             self.thumbLabel.setPixmap(pixmap)
 
+            # 1.media로 영상재생컨텐츠 설정하는 법
+            # self.media = self.vlc.media_new(info.getbest().url)
+            # self.player.set_media(self.media)
 
-            self.media = self.vlc.media_new(info.getbest().url)
-            self.player.set_media(self.media)
+            # 2.mrl로 영상재생컨텐츠 설정하는 법
+            self.player.set_mrl(info.getbest().url)
+
             self.player.play()
             time.sleep(2)
 
@@ -95,6 +115,17 @@ class Ui:
         except:
             self.authorEdit.setText("실패")
 
+    def volume50BtnEvent(self):
+        self.player.audio_set_volume(50)
+        print(self.player.audio_get_volume())
+
+    def volume20BtnEvent(self):
+        self.player.audio_set_volume(20)
+        print(self.player.audio_get_volume())
+
+    def volume100BtnEvent(self):
+        self.player.audio_set_volume(100)
+        print(self.player.audio_get_volume())
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
