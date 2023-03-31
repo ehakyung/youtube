@@ -391,6 +391,23 @@ class Ui:
             tmpBtn.setStyleSheet(self.iconOfVideoPagePlayOptionBtns[index] + self.backgroundTransparent + "background-repeat: no-repeat;")
             self.videoPagePlayOptionBtns.append(tmpBtn)
 
+        # Slider
+        self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.pagesOfScreen[6])
+        self.slider.setGeometry(530, 620, 200, 34)
+        self.slider.setValue(50)
+        self.slider.setStyleSheet("QSlider::groove:horizontal { \
+            height: 8px; \
+            background: rgba(255, 255, 255, 0.20);\
+            border-radius: 4px; \
+            } \
+            QSlider::handle:horizontal { \
+            background: #FFFFFF;\
+            width: 18px; \
+            margin: -2px 0; \
+            border-radius: 5px; \
+            }")
+
+
         # # Label(재생 중인 영상 제목)
         self.videoPageCurrentVideoNameLabel = QtWidgets.QLabel(self.pagesOfScreen[6])
         self.videoPageCurrentVideoNameLabel.setGeometry(20, 670, 710, 63)

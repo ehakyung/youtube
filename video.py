@@ -24,6 +24,8 @@ class Video:
         self.ui.videoPagePlayOptionBtns[2].enterEvent = lambda event: self.enterEvent5(event)
         self.ui.videoPagePlayOptionBtns[2].leaveEvent = lambda event: self.leaveEvent5(event)
         
+        self.ui.slider.valueChanged[int].connect(self.changeVolume)
+
 
         for index in range(0, len(self.ui.videoPageVideoBtns)):
             self.ui.videoPageVideoBtns[index].clicked.connect(self.videoBtnEvent)
@@ -104,6 +106,7 @@ class Video:
         self.database.readCurrentVideoInfo()
 
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
+        self.player.audio_set_volume(50)
         self.player.play()
         # self.ui.vlcFrame.show()
 
@@ -122,6 +125,7 @@ class Video:
         self.player.set_nsobject(int(self.ui.vlcFrame.winId()))
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
         self.player.stop()
+        self.player.audio_set_volume(50)
         self.player.play()
 
         self.eventManager = self.player.event_manager()
@@ -209,6 +213,10 @@ class Video:
         for index in range(0, len(self.ui.videoPageDeleteVideoBtns)):
             self.ui.videoPageDeleteVideoBtns[index].enterEvent = lambda event, i=index: self.enterEvent2(event, i)
             self.ui.videoPageDeleteVideoBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent2(event, i)
+
+    def changeVolume(self, value):
+        self.player.audio_set_volume(value)
+
 
     def logoutSetting(self):
         self.selectedVideoBtnIndex = None

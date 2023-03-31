@@ -109,11 +109,15 @@ class Main:
         #여기까지 실행되면 어떤 index(db)의 playlist가 선택됐는지 알 수 있음
 
         self.database.indexOfSelectedPlaylist = tmpIndex
+
+        self.database.readLoggedIdPlaylistInfo()
         tmpList = []
         for index in range(0, len(self.database.playlistOfLoggedId)):
-            tmpList.append(self.database.playlistOfLoggedId[index][0])
+            tmpList.append(self.database.playlistOfLoggedId[index][1])
         
-        self.ui.selectedPlaylistBtnIndex = tmpList.index(tmpIndex)
+        print(tmpList)
+
+        self.ui.selectedPlaylistBtnIndex = tmpList.index(int(tmpIndex))
 
         self.database.readNameOfPlaylist()
         self.ui.videoPagePlaylistNameLabel.setText(self.database.selectedPlaylistName)
