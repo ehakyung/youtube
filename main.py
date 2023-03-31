@@ -14,8 +14,11 @@ class Main:
         self.ui.mainPageLogoutBtn.enterEvent = lambda event: self.enterEvent2(event)
         self.ui.mainPageLogoutBtn.leaveEvent = lambda event: self.leaveEvent2(event)
 
+        self.ui.homeBtns[0].clicked.connect(self.homeBtnEvent1)
+        self.ui.homeBtns[1].clicked.connect(self.homeBtnEvent2)
+
         for index in range (0, len(self.ui.homeBtns)):
-            self.ui.homeBtns[index].clicked.connect(self.homeBtnEvent)
+            # self.ui.homeBtns[index].clicked.connect(self.homeBtnEvent)
             self.ui.homeBtns[index].enterEvent = lambda event, i=index: self.enterEvent4(event, i)
             self.ui.homeBtns[index].leaveEvent = lambda event, i=index: self.leaveEvent4(event, i)
 
@@ -42,9 +45,16 @@ class Main:
         self.ui.myInfoPageEdits[5].setText(str(len(self.database.numOfPlaylistRead)))
         self.ui.screen.setCurrentIndex(5)
 
-    def homeBtnEvent(self):
+    def homeBtnEvent1(self):
+        self.ui.screen.setCurrentIndex(4)
+
+    def homeBtnEvent2(self):
+        self.video.player.stop()
+        self.video.player.release()
+        self.ui.vlcFrame.hide()
         self.ui.screen.setCurrentIndex(4)
         self.ui.clearVideoPage()
+
 
     def logoutBtnEvent(self):
         self.ui.messageBoxPopUp(0)
@@ -96,14 +106,23 @@ class Main:
         #여기까지 실행되면 어떤 index(db)의 playlist가 선택됐는지 알 수 있음
 
         self.database.indexOfSelectedPlaylist = tmpIndex
+        tmpList = []
+        for index in range(0, len(self.database.playlistOfLoggedId)):
+            tmpList.append(self.database.playlistOfLoggedId[index][0])
+        
+        self.ui.selectedPlaylistBtnIndex = tmpList.index(tmpIndex)
+
         self.database.readNameOfPlaylist()
         self.ui.videoPagePlaylistNameLabel.setText(self.database.selectedPlaylistName)
 
         self.database.readSelectedPlaylistVideoInfo()
 
         self.ui.displayVideo()
+        self.ui.videoPageEmptyLabel.show()
+        self.ui.vlcFrame.show()
         self.ui.screen.setCurrentIndex(6)
         self.video = video.Video(self.ui, self.database)
+        self.video.initPlayer()
 
 
     def deletePlaylistBtnEvent(self):

@@ -6,13 +6,14 @@ class Database:
 
         self.logoutSetting()
 
-        self.connect = sqlite3.connect("database.db")
+        self.connect = sqlite3.connect("database.db", check_same_thread=False)
         self.cursor = self.connect.cursor()
 
         #unique key와 primary key는 다름/autoincreament를 써서 primary key로 만드는 것도 방법임/가입데이터에 가입 date도 넣기
         self.cursor.execute("CREATE TABLE IF NOT EXISTS account (name TEXT, id TEXT PRIMARY KEY, pw TEXT, phone TEXT, mail TEXT, dateTimeOfJoin TEXT)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS playlist (id TEXT REFERENCES account(id), nameOfList TEXT, indexOfList INTEGER PRIMARY KEY AUTOINCREMENT)")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS video (indexOfList INTEGER REFERENCES playlist(indexOfList), title TEXT, author TEXT, view INTEGER, thumb TEXT, streamingUrl TEXT, indexOfVideo INTEGER PRIMARY KEY AUTOINCREMENT)")
+        # self.cursor.execute("CREATE TABLE IF NOT EXISTS video (indexOfList INTEGER REFERENCES playlist(indexOfList), title TEXT, author TEXT, view INTEGER, thumb TEXT, streamingUrl TEXT, indexOfVideo INTEGER PRIMARY KEY AUTOINCREMENT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS video (indexOfList INTEGER REFERENCES playlist(indexOfList), title TEXT, author TEXT, view INTEGER, thumb TEXT, streamingUrl TEXT, indexOfVideo INTEGER PRIMARY KEY AUTOINCREMENT, length INTEGER)")
 
     def matchLoginInfo(self):
         self.cursor.execute("SELECT id, pw FROM account WHERE id=? AND pw=?", self.loginInfo)
@@ -67,24 +68,25 @@ class Database:
         result = self.cursor.fetchall()
         self.checkPlaylistNameIndex = len(result)
 
-    def readFirstVideoThumb(self):
+    def readFirstVideoThumbs(self):
         self.playlistIndexOfLoggedId = []
-        self.firstVideoOfPlaylist = []
         self.firstVideoThumbOfPlaylist = []
         for index in range (0, len(self.playlistOfLoggedId)):
             self.playlistIndexOfLoggedId.append(self.playlistOfLoggedId[index][1])
-        for index in self.playlistOfLoggedId:
-            self.cursor.execute("SELECT indexOfVideo FROM video WHERE indexOfList=?", [index])
+
+        print(self.playlistOfLoggedId)
+        for index in self.playlistIndexOfLoggedId:
+            self.cursor.execute("SELECT thumb FROM video WHERE indexOfList=? ORDER BY indexOfVideo LIMIT 1", [index])
             result = self.cursor.fetchall()
-            tmpVideoIndexOfPlaylist = []
-            for index in range(0, len(result)):
-                tmpVideoIndexOfPlaylist.append(result[index][0])
-            self.firstVideoOfPlaylist.append(min(tmpVideoIndexOfPlaylist))
-        for index in self.firstVideoOfPlaylist:
-            self.cursor.execute("SELECT thumb FROM video WHERE indexOfVideo=?", [index])
-            result = self.cursor.fetchall()
-            self.firstVideoThumbOfPlaylist.append(result[index][0])
+            if len(result) == 0:
+                self.firstVideoThumbOfPlaylist.append("")
+            else:
+                self.firstVideoThumbOfPlaylist.append(result[0][0])
         
+    def readFirstVideoThumb(self):
+        self.cursor.execute("SELECT thumb FROM video WHERE indexOfList=? ORDER BY indexOfVideo LIMIT 1", [self.indexOfSelectedPlaylist]) 
+        result = self.cursor.fetchall()
+        self.newFirstVideoThumb = result[0][0]
 
     def createPlaylist(self):
         self.cursor.execute("INSERT INTO playlist (id, nameOfList) VALUES (?, ?)", [self.loggedId, self.playlistName])
@@ -96,16 +98,13 @@ class Database:
 
     def deletePlaylist(self):
         self.cursor.execute("DELETE FROM playlist WHERE indexOfList =?", [self.indexOfDeletedPlaylist])
+        self.cursor.execute("DELETE FROM video WHERE indexOfList =?", [self.indexOfDeletedPlaylist])
         self.connect.commit()
 
     def readNameOfPlaylist(self):
         self.cursor.execute("SELECT nameOfList FROM playlist WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
         result = self.cursor.fetchall()
         self.selectedPlaylistName = result[0][0]
-
-    # def findIndexOfSelectedPlaylistBtn(self):
-    #     self.readIndiceOfPlaylist()
-
 
     def readSelectedPlaylistVideoInfo(self):
         self.cursor.execute("SELECT title, author, view, thumb, indexOfVideo FROM video WHERE indexOfList=?", [self.indexOfSelectedPlaylist]) 
@@ -118,8 +117,9 @@ class Database:
         self.view = info.viewcount
         self.thumb = info.bigthumb
         self.streamingUrl = info.getbest().url
+        self.length = info.length
 
-        self.cursor.execute("INSERT INTO video (indexOfList, title, author, view, thumb, streamingUrl) VALUES (?, ?, ?, ?, ?, ?)", [self.indexOfSelectedPlaylist, self.title, self.author, self.view, self.thumb, self.streamingUrl])
+        self.cursor.execute("INSERT INTO video (indexOfList, title, author, view, thumb, streamingUrl, length) VALUES (?, ?, ?, ?, ?, ?, ?)", [self.indexOfSelectedPlaylist, self.title, self.author, self.view, self.thumb, self.streamingUrl, self.length])
         self.connect.commit()
 
     def readIndiceOfVideo(self):
@@ -139,9 +139,12 @@ class Database:
         self.newThumb = result[0][3]
 
     def readCurrentVideoInfo(self):
-        self.cursor.execute("SELECT title, author, view, streamingUrl FROM video WHERE indexOfVideo=?", [self.selectedVideoBtnIndex])
+        self.cursor.execute("SELECT title, author, view, streamingUrl, length FROM video WHERE indexOfVideo=?", [self.selectedVideoIndex])
         self.currentVideoInfo = self.cursor.fetchall()
         print(self.currentVideoInfo)
+
+    # def readNext
+    #     self.indexOfSelectedVideo
 
     def logoutSetting(self):
         self.loginInfo = None
@@ -149,7 +152,6 @@ class Database:
         self.loggedId = None
         self.playlistOfLoggedId = None
         self.playlistIndexOfLoggedId = None
-        self.firstVideoOfPlaylist = None
         self.firstVideoThumbOfPlaylist = None
         self.nameOfLoggedId = None
 
@@ -180,6 +182,7 @@ class Database:
         self.view = None
         self.thumb = None
         self.streamingUrl = None
+        self.length = None
 
         self.videosOfSelectedPlaylist = None
 
@@ -192,7 +195,8 @@ class Database:
         self.indexOfDeletedVideo = None
         self.currentVideoInfo = None
 
-        self.selectedVideoBtnIndex = None
+        self.selectedVideoIndex = None
+        self.indexOfSelectedVideo = None
 
 # if __name__ == "__main__":
 #     db=Database()
