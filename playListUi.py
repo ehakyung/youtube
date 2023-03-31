@@ -485,7 +485,7 @@ class Ui:
         self.mainPageScrollArea.setGeometry(0, 120, 1200, 780)
         self.mainPageScrollArea.setWidget(self.mainPageWidgetForScoll)
         self.mainPageScrollArea.setWidgetResizable(False)
-
+       
     def clearMainPage(self):
         for index in range(0, len(self.mainPagePlaylistBtns)):
             self.mainPagePlaylistBtns[index].deleteLater()
@@ -561,9 +561,10 @@ class Ui:
             pass
 
     def displayVideo(self):
-        if len(database.videosOfSelectedPlaylist) == 0:
-            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 890)
-        elif len(database.videosOfSelectedPlaylist) != 0:
+        print(len(database.videosOfSelectedPlaylist))
+        if len(database.videosOfSelectedPlaylist) < 8:
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 810)
+        elif len(database.videosOfSelectedPlaylist) >= 8:
             self.videoPageWidgetForScoll.setGeometry(760, 80, 423, len(database.videosOfSelectedPlaylist)*104)
 
         # Frame
@@ -625,7 +626,7 @@ class Ui:
             self.videoPageDeleteVideoBtns.append(tmpBtn2)
 
         self.videoPageScrollArea=QtWidgets.QScrollArea(self.pagesOfScreen[6])
-        self.videoPageScrollArea.setGeometry(760, 80, 440, 900)
+        self.videoPageScrollArea.setGeometry(760, 80, 440, 820)
         self.videoPageScrollArea.setWidget(self.videoPageWidgetForScoll)
         self.videoPageScrollArea.setWidgetResizable(False)
 
@@ -650,8 +651,9 @@ class Ui:
         self.videoPageCurrentVideoViewLabel.clear()
 
     def addVideo(self):
+        database.readSelectedPlaylistVideoInfo()
         if self.indexOfNewVideoBtn < 7:  
-            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 890)
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 810)
             self.videoPageScrollArea.setWidgetResizable(False)
         else:
             print(self.indexOfNewVideoBtn)
@@ -764,7 +766,7 @@ class Ui:
 
     def resetVideoGeometry(self):
         if len(self.videoPageDeleteVideoBtns) <= 7 :
-            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 890)
+            self.videoPageWidgetForScoll.setGeometry(760, 80, 423, 810)
             self.videoPageScrollArea.setWidgetResizable(False)
         else:
             print(len(self.videoPageDeleteVideoBtns))
