@@ -394,7 +394,7 @@ class Ui:
         # Slider
         self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.pagesOfScreen[6])
         self.slider.setGeometry(530, 620, 200, 34)
-        self.slider.setValue(50)
+        self.slider.setValue(70)
         self.slider.setStyleSheet("QSlider::groove:horizontal { \
             height: 8px; \
             background: rgba(255, 255, 255, 0.20);\
@@ -784,7 +784,7 @@ class Ui:
             pass
 
     def messageBoxPopUp(self, index):
-        self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록과 포함된 영상을 모두 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다", "URL이 잘못되었거나 영상을 불러올 수 없습니다"]
+        self.textOfDialog = ["로그아웃 하시겠습니까?", "재생목록과 포함된 영상을 모두 삭제하시겠습니까?", "영상을 재생목록에서 삭제하시겠습니까?", "이름을 20자 이내로 입력해주세요", "동일한 이름의 재생목록이 있습니다", "URL이 잘못되었거나 영상을 불러올 수 없습니다", "재생목록명이 입력되지 않았습니다"]
         self.msgBox = QtWidgets.QMessageBox(self.mainWindow)
         self.msgBox.setText(self.textOfDialog[index])
         if index < 3:

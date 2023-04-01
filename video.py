@@ -106,7 +106,7 @@ class Video:
         self.database.readCurrentVideoInfo()
 
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
-        self.player.audio_set_volume(50)
+        self.player.audio_set_volume(70)
         self.player.play()
         # self.ui.vlcFrame.show()
 
@@ -125,7 +125,7 @@ class Video:
         self.player.set_nsobject(int(self.ui.vlcFrame.winId()))
         self.player.set_mrl(self.database.currentVideoInfo[0][3])
         self.player.stop()
-        self.player.audio_set_volume(50)
+        self.player.audio_set_volume(70)
         self.player.play()
 
         self.eventManager = self.player.event_manager()
@@ -216,7 +216,6 @@ class Video:
 
     def changeVolume(self, value):
         self.player.audio_set_volume(value)
-
 
     def logoutSetting(self):
         self.selectedVideoBtnIndex = None

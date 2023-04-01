@@ -78,6 +78,8 @@ class Main:
         if self.ui.reply == 1:
             if len(self.ui.tmpPlaylistName) > 20:
                 self.ui.messageBoxPopUp(3)
+            elif self.ui.tmpPlaylistName == "":
+                self.ui.messageBoxPopUp(6)
             else:
                 self.database.playlistName = self.ui.tmpPlaylistName
                 self.database.checkPlaylistName()
